@@ -1,4 +1,4 @@
-package com.igna.app;
+package com.igna.tienda.desktop.ui;
 
 /**
  * Hello world!

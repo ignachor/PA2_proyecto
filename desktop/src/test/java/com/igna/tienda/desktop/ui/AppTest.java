@@ -1,4 +1,4 @@
-package com.igna.app;
+package com.igna.tienda.desktop.ui;
 
 import org.junit.jupiter.api.Test;
 
@@ -11,4 +11,3 @@ class AppTest {
         assertTrue(true);
     }
 }
-
