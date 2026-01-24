@@ -23,6 +23,7 @@
     <module>core</module>
     <module>infra</module>
     <module>desktop</module>
+    <module>web</module>
   </modules>
 
   <dependencyManagement>
