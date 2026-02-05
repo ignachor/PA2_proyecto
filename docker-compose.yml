@@ -1,0 +1,16 @@
+services:
+  db:
+    image: mysql:8.4
+    container_name: pa2_mysql
+    environment:
+      MYSQL_DATABASE: pa2_db
+      MYSQL_USER: pa2_user
+      MYSQL_PASSWORD: pa2_pass
+      MYSQL_ROOT_PASSWORD: root_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - pa2_mysqldata:/var/lib/mysql
+
+volumes:
+  pa2_mysqldata:
