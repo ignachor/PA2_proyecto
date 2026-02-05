@@ -1,23 +1,34 @@
 package com.igna.tienda.core.domain;
 import com.igna.tienda.core.domain.enums.Rol;
 import java.util.UUID;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "usuario", uniqueConstraints= @UniqueConstraint(columnNames = "email"))
 public class Usuario {
-    private UUID id;
+    @Id
+    @Column(length = 36)
+    private String id;
+    @Column(nullable = false)
     private String nombre;
+    @Column(nullable = false)
     private String apellido;
+    @Column(nullable = false, unique = true)
     private String email;
-    private boolean activo; 
+    @Column(nullable = false)
+    private boolean activo;
+    @Column(nullable = false) 
     private String password;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Rol rol;
 
     public Usuario() {
-        this.id = UUID.randomUUID();
-        this.activo = true;
+
     }
 
     public Usuario(UUID id, String nombre, String apellido, String email, String password, Rol rol) {
-        this.id = id;
+        this.id = id.toString();
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
@@ -27,7 +38,7 @@ public class Usuario {
     }
 
     public UUID getId() {
-        return id;
+        return UUID.fromString(id);
     }
 
     public String getNombre() {
@@ -44,6 +55,10 @@ public class Usuario {
 
     public String getPassword() {
         return password;
+    }
+
+    public Rol getRol() {
+        return rol;
     }
 
     public boolean esCliente() {
