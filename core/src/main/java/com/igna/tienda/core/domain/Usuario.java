@@ -8,16 +8,22 @@ public class Usuario {
     private String apellido;
     private String email;
     private boolean activo; 
-    private String passwordHash;
+    private String password;
     private Rol rol;
 
-    public Usuario(UUID id, String nombre, String apellido, String email, String passwordHash, Rol rol) {
+    public Usuario() {
+        this.id = UUID.randomUUID();
+        this.activo = true;
+    }
+
+    public Usuario(UUID id, String nombre, String apellido, String email, String password, Rol rol) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.rol = rol;
+        this.activo = true;
     }
 
     public UUID getId() {
@@ -36,6 +42,10 @@ public class Usuario {
         return email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public boolean esCliente() {
         return rol == Rol.CLIENTE;
     }
@@ -50,5 +60,9 @@ public class Usuario {
 
     public void activar() {
         this.activo = true;
+    }
+
+    public boolean esActivo() {
+        return activo;
     }
 }
