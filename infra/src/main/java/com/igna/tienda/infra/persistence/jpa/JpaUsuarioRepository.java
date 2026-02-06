@@ -3,7 +3,6 @@ package com.igna.tienda.infra.persistence.jpa;
 import com.igna.tienda.core.domain.Usuario;
 import com.igna.tienda.core.repositories.UsuarioRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityResult;
 import jakarta.persistence.NoResultException;
 
 import java.util.UUID;
@@ -32,8 +31,8 @@ public class JpaUsuarioRepository implements UsuarioRepository {
      }
 
      public void guardar(Usuario usuario) {
-        em.getTransaction().begin();
+     
         em.merge(usuario);
-        em.getTransaction().commit();
+   
      }
 }

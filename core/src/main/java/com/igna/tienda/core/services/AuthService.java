@@ -6,22 +6,17 @@ import com.igna.tienda.core.domain.Usuario;
 import com.igna.tienda.core.repositories.UsuarioRepository;
 import com.igna.tienda.core.domain.enums.Rol;
 public class AuthService {
-    private final UsuarioRepository UsuarioRepository;
+    private final UsuarioRepository uRepo;
     public AuthService(UsuarioRepository UsuarioRepository) {
-        this.UsuarioRepository = UsuarioRepository;
+        this.uRepo = UsuarioRepository;
     }
 
     //CU-01: Registrar Cliente
     public Usuario registrar(String nombre, String apellido, String email, String password, Rol rol) {
-        if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException("El email no puede estar vacío");
-        }
-        if (password == null || password.isBlank()) {
-            throw new IllegalArgumentException("La contraseña no puede estar vacía");
-        }
-        String emailNorm = email.trim().toLowerCase();
-        
-        if(UsuarioRepository.buscarPorEmail(emailNorm) != null) {
+
+        String emailNorm = normalizarEmail(email);
+        String passwordVal = validarContraseña(password);
+        if(uRepo.buscarPorEmail(emailNorm) != null) {
             throw new IllegalAccessError("El email ingresado ya está en uso");
         }
 
@@ -30,29 +25,44 @@ public class AuthService {
             nombre,
             apellido,
             emailNorm,
-            password,
-            rol = Rol.CLIENTE
+            passwordVal,
+            Rol.CLIENTE
         );
-        UsuarioRepository.guardar(u);
+        uRepo.guardar(u);
         return u;
 }
         //CU-02: Iniciar Sesión Cliente
 
         public Usuario iniciarSesion(String email, String password) {
-            String emailNorm = email.trim().toLowerCase();
-            Usuario usuarioBuscar = UsuarioRepository.buscarPorEmail(emailNorm);
+            String emailNorm = normalizarEmail(email);
+            String passwordVal = validarContraseña(password);
+            Usuario usuarioBuscar = uRepo.buscarPorEmail(emailNorm);
             if(usuarioBuscar == null) {
                 throw new IllegalArgumentException("Email o contraseña incorrectos");
             }
 
             if(!usuarioBuscar.esActivo()) {
-                throw new IllegalAccessError("El usuario se encuentra desactivado");
+                throw new IllegalArgumentException("El usuario se encuentra desactivado");
             }
 
-            if(!usuarioBuscar.getPassword().equals(password)) {
+            if(!usuarioBuscar.getPassword().equals(passwordVal)) {
                 throw new IllegalArgumentException("Contraseña incorrecta");
             }
 
             return usuarioBuscar;
+        }
+
+        public static String normalizarEmail(String email) {
+            if (email == null || email.isBlank()) {
+                throw new IllegalArgumentException("El email no puede estar vacío");
+            }
+            return  email.trim().toLowerCase();
+        }
+
+        public static String validarContraseña(String password) {
+            if (password == null || password.isBlank()) {
+                throw new IllegalArgumentException("La contraseña no puede estar vacía");
+            }
+            return password;
         }
     }
