@@ -5,5 +5,4 @@ public interface UsuarioRepository {
     Usuario buscarPorEmail(String email);
     Usuario buscarPorId(UUID id);
     void guardar(Usuario usuario);
-
 }
