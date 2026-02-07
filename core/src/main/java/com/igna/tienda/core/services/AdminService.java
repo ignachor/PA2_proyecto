@@ -1,18 +1,39 @@
 package com.igna.tienda.core.services;
+import java.util.UUID;
 
+import com.igna.tienda.core.domain.Usuario;
+import com.igna.tienda.core.repositories.UsuarioRepository; 
+import com.igna.tienda.core.domain.enums.Rol;
 public class AdminService {
-    public void AltaUsuario(){
+    private final UsuarioRepository uRepo;
+    public AdminService(UsuarioRepository UsuarioRepository) {
+        this.uRepo = UsuarioRepository;
+    }
+
+    //CU-18: Alta UsuARIO
+    public void AltaUsuario(String nombre, String apellido, String email, String password){
+        UUID id = UUID.randomUUID();
+        Usuario nuevoUsuario = new Usuario(id, nombre, apellido, email, password, Rol.CLIENTE);
+        uRepo.guardar(nuevoUsuario);
         //TODO: Implementar el método para dar de alta a un usuario
     }
 
-    public void BajaUsuario(){ 
+    //CU-19: Baja UsuARIO
+    public void BajaUsuario(String id, String email){ 
+        Usuario bajarUsuario = uRepo.buscarPorEmail(email);
+        if(bajarUsuario != null && bajarUsuario.getId().toString().equals(id)){
+            bajarUsuario = new Usuario(bajarUsuario.getId(), bajarUsuario.getNombre(), bajarUsuario.getApellido(), bajarUsuario.getEmail(), bajarUsuario.getPassword(), bajarUsuario.getRol());
+            bajarUsuario.desactivar(); 
+            uRepo.guardar(bajarUsuario);
+        }
+
         //TODO: Implementar el método para dar de baja a un usuario
     }
 
-    public void ModificarUsuario(){
-        //TODO: Implementar el método para modificar los datos de un usuario
-    }
+    //CU-20: Modificar UsuARIO 
 
+
+    //CU-17: Listar UsuARIOS
     public void ListarUsuarios(){
         //TODO: Implementar el método para listar todos los usuarios
     }

@@ -80,4 +80,17 @@ public class Usuario {
     public boolean esActivo() {
         return activo;
     }
+
+    public void cambiarEmail(String email) {
+        this.email = email;
+    }
+
+    public void cambiarDatosPersonales(String nombre, String apellido) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+    }
+
+    public void cambiarDireccion(String direccion) {
+        //TODO: Implementar método para cambiar la dirección del usuario
+         }
 }
