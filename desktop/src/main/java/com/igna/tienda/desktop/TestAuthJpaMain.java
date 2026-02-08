@@ -12,8 +12,8 @@ public class TestAuthJpaMain {
         var auth = new AuthServiceTx(emf);
         
         Direccion direccion = new Direccion("Calle Falsa", "123", "Springfield", "Illinois", "62704");   
-        auth.registrar("Raul", "Marquez", "raul@mail.com", direccion, "1234", Rol.CLIENTE);
-        var u = auth.iniciarSesion("raul@mail.com", "1234");
+        auth.registrar("Ayelen", "Gonzales", "12345678", "admin_1@mail.com", direccion, "1234", Rol.ADMIN);
+        var u = auth.iniciarSesion("admin@mail.com", "1234");
 
         System.out.println("Login OK: " + u.getEmail() + " rol=" + u.getRol());
 

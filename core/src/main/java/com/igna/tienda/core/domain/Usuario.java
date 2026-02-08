@@ -14,6 +14,8 @@ public class Usuario {
     private String nombre;
     @Column(nullable = false)
     private String apellido;
+    @Column(nullable = false)
+    private String dni;
     @Column(nullable = false, unique = true)
     private String email;
     @Embedded
@@ -30,16 +32,19 @@ public class Usuario {
 
     }
 
-    public Usuario(UUID id, String nombre, String apellido, String email, Direccion direccion, String password, Rol rol) {
+    public Usuario(UUID id, String nombre, String apellido, String dni, String email, Direccion direccion, String password, Rol rol) {
         this.id = id.toString();
         this.nombre = nombre;
         this.apellido = apellido;
+        this.dni = dni;
         this.email = email;
         this.direccion = direccion;
         this.password = password;
         this.rol = rol;
         this.activo = true;
     }
+
+    
 
     public UUID getId() {
         return UUID.fromString(id);
@@ -51,6 +56,10 @@ public class Usuario {
 
     public String getApellido() {
         return apellido;
+    }
+
+    public String getDni() {
+        return dni;
     }
 
     public String getEmail() {

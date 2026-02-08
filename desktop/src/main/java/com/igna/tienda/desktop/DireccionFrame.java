@@ -126,6 +126,7 @@ public class DireccionFrame extends JDialog {
                     usuarioActual.getId(),
                     usuarioActual.getNombre(),
                     usuarioActual.getApellido(),
+                    usuarioActual.getDni(),
                     usuarioActual.getEmail(),
                     nueva,
                     usuarioActual.getPassword(),

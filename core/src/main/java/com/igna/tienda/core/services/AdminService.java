@@ -9,20 +9,23 @@ public class AdminService {
     public AdminService(UsuarioRepository UsuarioRepository) {
         this.uRepo = UsuarioRepository;
     }
-
+ 
     //CU-18: Alta UsuARIO
-    public void AltaUsuario(String nombre, String apellido, Direccion direccion, String email, String password){
+    public void AltaUsuario(String nombre, String apellido, String dni, Direccion direccion, String email, String password){
+        if (dni == null || dni.isBlank()) {
+            throw new IllegalArgumentException("DNI no proporcionado");
+        }
         UUID id = UUID.randomUUID();
-        Usuario nuevoUsuario = new Usuario(id, nombre, apellido, email, direccion, password, Rol.CLIENTE);
+        Usuario nuevoUsuario = new Usuario(id, nombre, apellido, dni, email, direccion, password, Rol.CLIENTE);
         uRepo.guardar(nuevoUsuario);
         //TODO: Implementar el método para dar de alta a un usuario
     }
 
     //CU-19: Baja UsuARIO
-    public void BajaUsuario(String id, String email){ 
-        Usuario bajarUsuario = uRepo.buscarPorEmail(email);
-        if(bajarUsuario != null && bajarUsuario.getId().toString().equals(id)){
-            bajarUsuario = new Usuario(bajarUsuario.getId(), bajarUsuario.getNombre(), bajarUsuario.getApellido(), bajarUsuario.getEmail(), bajarUsuario.getDireccion(), bajarUsuario.getPassword(), bajarUsuario.getRol());
+    public void DesactivarUsuario(Usuario usuario){ 
+        Usuario bajarUsuario = uRepo.buscarPorEmail(usuario.getEmail());
+        if(bajarUsuario != null && bajarUsuario.getId().toString().equals(usuario.getId().toString())){
+            bajarUsuario = new Usuario(bajarUsuario.getId(), bajarUsuario.getNombre(), bajarUsuario.getApellido(), bajarUsuario.getDni(), bajarUsuario.getEmail(), bajarUsuario.getDireccion(), bajarUsuario.getPassword(), bajarUsuario.getRol());
             bajarUsuario.desactivar(); 
             uRepo.guardar(bajarUsuario);
         }
@@ -30,7 +33,15 @@ public class AdminService {
         //TODO: Implementar el método para dar de baja a un usuario
     }
 
-    //CU-20: Modificar UsuARIO 
+    
+    //CU-17: Buscar UsuARIOS
+    public Usuario BuscarUsuario(String email){
+         Usuario buscarUsuario = uRepo.buscarPorEmail(email);
+         if(buscarUsuario != null){
+            return buscarUsuario;
+         } 
+         return null;
+    }
 
 
     //CU-17: Listar UsuARIOS
@@ -38,9 +49,7 @@ public class AdminService {
         //TODO: Implementar el método para listar todos los usuarios
     }
 
-    public void BuscarUsuario(){
-       //TODO: Implementar el método para buscar un usuario por su email o ID     
-    }
+
 
     public void AltaProducto(){
         //TODO: Implementar el método para dar de alta a un producto

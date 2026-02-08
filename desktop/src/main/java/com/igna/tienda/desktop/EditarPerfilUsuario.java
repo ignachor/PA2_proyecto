@@ -14,6 +14,7 @@ public class EditarPerfilUsuario extends JDialog {
 
     private final JTextField nombreField = new JTextField(20);
     private final JTextField apellidoField = new JTextField(20);
+    private final JTextField dniField = new JTextField(20);
     private final JTextField emailField = new JTextField(24);
     private final JPasswordField passwordField = new JPasswordField(20);
 
@@ -31,6 +32,8 @@ public class EditarPerfilUsuario extends JDialog {
         setMinimumSize(new Dimension(460, 280));
         setLocationRelativeTo(owner);
         setContentPane(buildContent());
+        dniField.setEditable(false);
+        dniField.setEnabled(false);
         wireEvents();
         cargarDatosUsuario();
     }
@@ -64,6 +67,12 @@ public class EditarPerfilUsuario extends JDialog {
         form.add(new JLabel("Apellido:"), c);
         c.gridx = 1;
         form.add(apellidoField, c);
+        y++;
+
+        c.gridx = 0; c.gridy = y;
+        form.add(new JLabel("DNI:"), c);
+        c.gridx = 1;
+        form.add(dniField, c);
         y++;
 
         c.gridx = 0; c.gridy = y;
@@ -102,6 +111,7 @@ public class EditarPerfilUsuario extends JDialog {
     private void cargarDatosUsuario() {
         nombreField.setText(usuarioActual.getNombre());
         apellidoField.setText(usuarioActual.getApellido());
+        dniField.setText(usuarioActual.getDni());
         emailField.setText(usuarioActual.getEmail());
         passwordField.setText("");
     }
@@ -120,6 +130,7 @@ public class EditarPerfilUsuario extends JDialog {
                     usuarioActual.getId(),
                     nombre,
                     apellido,
+                    usuarioActual.getDni(),
                     usuarioActual.getEmail(),
                     usuarioActual.getDireccion(),
                     usuarioActual.getPassword(),
@@ -140,6 +151,7 @@ public class EditarPerfilUsuario extends JDialog {
                         usuarioActual.getId(),
                         nombre,
                         apellido,
+                        usuarioActual.getDni(),
                         email,
                         usuarioActual.getDireccion(),
                         pass,
@@ -173,6 +185,7 @@ public class EditarPerfilUsuario extends JDialog {
         cancelBtn.setEnabled(!busy);
         nombreField.setEnabled(!busy);
         apellidoField.setEnabled(!busy);
+        dniField.setEnabled(false);
         emailField.setEnabled(!busy);
         passwordField.setEnabled(!busy);
         setCursor(busy ? Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR) : Cursor.getDefaultCursor());

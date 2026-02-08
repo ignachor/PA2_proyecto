@@ -3,6 +3,7 @@ package com.igna.tienda.desktop;
 import com.igna.tienda.core.domain.Usuario;
 import com.igna.tienda.infra.services.AuthServiceTx;
 import com.igna.tienda.infra.services.UsuarioServiceTx;
+import com.igna.tienda.infra.services.AdminServiceTx;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +12,7 @@ public class MenuFrame extends JFrame {
 
     private final AuthServiceTx authTx;
     private final UsuarioServiceTx usuarioTx;
+    private final AdminServiceTx adminTx;
     private Usuario usuarioActual;
 
     private final JLabel nombreLabel = new JLabel();
@@ -18,10 +20,11 @@ public class MenuFrame extends JFrame {
     private final JButton editarPerfilBtn = new JButton("Editar perfil");
     private final JButton cerrarSesionBtn = new JButton("Cerrar sesi\u00f3n");
 
-    public MenuFrame(AuthServiceTx authTx, UsuarioServiceTx usuarioTx, Usuario usuarioActual) {
+    public MenuFrame(AuthServiceTx authTx, UsuarioServiceTx usuarioTx, AdminServiceTx adminTx, Usuario usuarioActual) {
         super("Men\u00fa - Tienda");
         this.authTx = authTx;
         this.usuarioTx = usuarioTx;
+        this.adminTx = adminTx;
         this.usuarioActual = usuarioActual;
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -78,6 +81,6 @@ public class MenuFrame extends JFrame {
     private void doLogout() {
         // Cerramos el menu y volvemos al login (nuevo frame)
         dispose();
-        new LoginFrame(authTx, usuarioTx).setVisible(true);
+        new LoginFrame(authTx, usuarioTx, adminTx).setVisible(true);
     }
 }

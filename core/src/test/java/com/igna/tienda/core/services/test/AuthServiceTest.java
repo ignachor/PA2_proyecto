@@ -14,7 +14,7 @@ public class AuthServiceTest {
         UsuarioRepository repo = new InMemoryUsuarioRepository();
         AuthService auth = new AuthService(repo);
         Direccion direccion = new Direccion("Calle Falsa", "123", "Springfield", "Illinois", "62704");
-        auth.registrar("Jose","Crucillo", "igna@mail.com", direccion,  "1234", Rol.CLIENTE);
+        auth.registrar("Jose","Crucillo", "12345678", "igna@mail.com", direccion,  "1234", Rol.CLIENTE);
 
         Usuario u = auth.iniciarSesion("igna@mail.com", "1234");
 

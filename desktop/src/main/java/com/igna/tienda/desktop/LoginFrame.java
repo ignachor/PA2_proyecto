@@ -1,9 +1,10 @@
 package com.igna.tienda.desktop;
 
+import com.igna.tienda.infra.services.AdminServiceTx;
 import com.igna.tienda.infra.services.AuthServiceTx;
 import com.igna.tienda.core.domain.Usuario;
 import com.igna.tienda.infra.services.UsuarioServiceTx;
-
+import com.igna.tienda.core.domain.enums.Rol;
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,18 +12,18 @@ public class LoginFrame extends JFrame {
 
     private final AuthServiceTx authTx;
     private final UsuarioServiceTx usuarioTx;
-
+    private final AdminServiceTx adminTx;
     private final JTextField emailField = new JTextField(24);
     private final JPasswordField passwordField = new JPasswordField(24);
     private final JButton loginBtn = new JButton("Iniciar sesión");
     private final JButton registerBtn = new JButton("Registrarse");
     private final JLabel statusLabel = new JLabel(" ");
 
-    public LoginFrame(AuthServiceTx authTx, UsuarioServiceTx usuarioTx) {
+    public LoginFrame(AuthServiceTx authTx, UsuarioServiceTx usuarioTx, AdminServiceTx adminTx) {
         super("Login - Tienda");
         this.authTx = authTx;
         this.usuarioTx = usuarioTx;
-
+        this.adminTx = adminTx;
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(420, 220));
         setLocationRelativeTo(null);
@@ -78,15 +79,18 @@ public class LoginFrame extends JFrame {
         setBusy(true);
         try {
             Usuario u = authTx.iniciarSesion(email, pass);
-            statusLabel.setText("Login OK: " + u.getEmail() + " (rol=" + u.getRol() + ")");
-
             // 1) Con login OK abrimos el menu y le pasamos el usuario logueado
             // 2) Cerramos el login para que no quede abierto detras
-            MenuFrame menu = new MenuFrame(authTx, usuarioTx, u);
-            menu.setVisible(true);
-            dispose();
-
-
+            if (u.getRol() == Rol.CLIENTE) {
+                MenuFrame menu = new MenuFrame(authTx, usuarioTx, adminTx, u);
+                menu.setVisible(true);
+                dispose();
+            } else {
+                MenuAdminFrame admin = new MenuAdminFrame(authTx, usuarioTx, adminTx, u);
+                admin.setVisible(true);
+                dispose();
+            }
+            statusLabel.setText("Login OK: " + u.getEmail() + " (rol=" + u.getRol() + ")");
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(this,
                     ex.getMessage(),

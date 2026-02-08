@@ -12,6 +12,7 @@ public class RegisterDialog extends JDialog {
 
     private final JTextField nombreField = new JTextField(20);
     private final JTextField apellidoField = new JTextField(20);
+    private final JTextField dniField = new JTextField(20);
     private final JTextField emailField = new JTextField(20);
     private final JTextField calleField = new JTextField(20);
     private final JTextField numeroField = new JTextField(20);
@@ -60,6 +61,12 @@ public class RegisterDialog extends JDialog {
         form.add(new JLabel("Apellido:"), c);
         c.gridx = 1;
         form.add(apellidoField, c);
+        y++;
+
+        c.gridx = 0; c.gridy = y;
+        form.add(new JLabel("DNI:"), c);
+        c.gridx = 1;
+        form.add(dniField, c);
         y++;
 
         c.gridx = 0; c.gridy = y;
@@ -122,6 +129,7 @@ public class RegisterDialog extends JDialog {
     private void doRegister() {
         String nombre = nombreField.getText();
         String apellido = apellidoField.getText();
+        String dni = dniField.getText();
         String email = emailField.getText();
         String pass = new String(passwordField.getPassword());
         Direccion direccion = new Direccion(
@@ -134,7 +142,7 @@ public class RegisterDialog extends JDialog {
         setBusy(true);
         try {
             // usa tu AuthService corregido (registrarCliente)
-            authTx.registrar(nombre, apellido, email, direccion,pass, Rol.CLIENTE);
+            authTx.registrar(nombre, apellido, dni, email, direccion, pass, Rol.CLIENTE);
 
             registeredEmail = email == null ? null : email.trim().toLowerCase();
 
@@ -159,6 +167,7 @@ public class RegisterDialog extends JDialog {
         cancelBtn.setEnabled(!busy);
         nombreField.setEnabled(!busy);
         apellidoField.setEnabled(!busy);
+        dniField.setEnabled(!busy);
         emailField.setEnabled(!busy);
         passwordField.setEnabled(!busy);
         setCursor(busy ? Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR) : Cursor.getDefaultCursor());

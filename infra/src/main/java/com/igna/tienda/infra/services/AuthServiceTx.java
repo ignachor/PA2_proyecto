@@ -15,7 +15,7 @@ public class AuthServiceTx {
         this.emf = emf;
     }
 
-    public Usuario registrar(String nombre, String apellido, String email, Direccion direccion, String password, Rol rol) {
+    public Usuario registrar(String nombre, String apellido, String dni, String email, Direccion direccion, String password, Rol rol) {
         EntityManager em = emf.createEntityManager();
         var tx = em.getTransaction();
         try {
@@ -24,7 +24,7 @@ public class AuthServiceTx {
             var repo = new JpaUsuarioRepository(em);
             var authCore = new AuthService(repo);
 
-            Usuario u = authCore.registrar(nombre, apellido, email, direccion, password, rol);
+            Usuario u = authCore.registrar(nombre, apellido, dni, email, direccion, password, rol);
 
             tx.commit();
             return u;
