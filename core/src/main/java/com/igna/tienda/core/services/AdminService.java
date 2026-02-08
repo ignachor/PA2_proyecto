@@ -5,6 +5,8 @@ import com.igna.tienda.core.domain.value.Direccion;
 import com.igna.tienda.core.domain.Usuario;
 import com.igna.tienda.core.repositories.UsuarioRepository; 
 import com.igna.tienda.core.domain.enums.Rol;
+import com.igna.tienda.core.domain.Producto;
+
 public class AdminService {
     private final UsuarioRepository uRepo;
     public AdminService(UsuarioRepository UsuarioRepository) {
@@ -51,8 +53,49 @@ public class AdminService {
 
 
 
-    public void AltaProducto(){
-        //TODO: Implementar el método para dar de alta a un producto
+    public void AltaProducto(Producto producto){
+        if (producto == null) {
+            throw new IllegalArgumentException("Producto no proporcionado");
+        }
+        if (producto.getNombre() == null || producto.getNombre().isBlank()) {
+            throw new IllegalArgumentException("Nombre de producto no proporcionado");
+        }
+        if (producto.getCategoria() == null || producto.getCategoria().isBlank()) {
+            throw new IllegalArgumentException("Categoria de producto no proporcionada");
+        }
+        if (producto.getDescripcion() == null || producto.getDescripcion().isBlank()) {
+            throw new IllegalArgumentException("Descripcion de producto no proporcionada");
+        }
+        if (producto.getPrecio() <= 0) {
+            throw new IllegalArgumentException("Precio de producto invalido");
+        }
+        if (producto.getCantidad() < 0) {
+            throw new IllegalArgumentException("Cantidad de producto invalida");
+        }
+        if (producto.getCantidadMinimo() < 0) {
+            throw new IllegalArgumentException("Cantidad minima invalida");
+        }
+
+        String id = producto.getId();
+        if (id == null || id.isBlank()) {
+            id = UUID.randomUUID().toString();
+        }
+
+        Producto productoDarDeAlta = new Producto(
+            id,
+            producto.getNombre(),
+            producto.getDescripcion(),
+            producto.getCategoria(),
+            producto.getPrecio(),
+            producto.getCantidad(),
+            producto.getCantidadMinimo(),
+            producto.getStock()
+        );
+        if (productoDarDeAlta.getCantidad() > 0) {
+            productoDarDeAlta.hayStock();
+        } else {
+            productoDarDeAlta.noHayStock();
+        }
     }
 
     public void BajaProducto(){
