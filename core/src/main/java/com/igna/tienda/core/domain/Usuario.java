@@ -1,5 +1,6 @@
 package com.igna.tienda.core.domain;
 import com.igna.tienda.core.domain.enums.Rol;
+import com.igna.tienda.core.domain.value.Direccion;
 import java.util.UUID;
 import jakarta.persistence.*;
 
@@ -15,6 +16,8 @@ public class Usuario {
     private String apellido;
     @Column(nullable = false, unique = true)
     private String email;
+    @Embedded
+    private Direccion direccion;
     @Column(nullable = false)
     private boolean activo;
     @Column(nullable = false) 
@@ -27,11 +30,12 @@ public class Usuario {
 
     }
 
-    public Usuario(UUID id, String nombre, String apellido, String email, String password, Rol rol) {
+    public Usuario(UUID id, String nombre, String apellido, String email, Direccion direccion, String password, Rol rol) {
         this.id = id.toString();
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
+        this.direccion = direccion;
         this.password = password;
         this.rol = rol;
         this.activo = true;
@@ -51,6 +55,10 @@ public class Usuario {
 
     public String getEmail() {
         return email;
+    }
+     
+    public Direccion getDireccion() {
+        return direccion;
     }
 
     public String getPassword() {
@@ -90,7 +98,7 @@ public class Usuario {
         this.apellido = apellido;
     }
 
-    public void cambiarDireccion(String direccion) {
-        //TODO: Implementar método para cambiar la dirección del usuario
-         }
+    public void cambiarDireccion(Direccion direccion) {
+        this.direccion = direccion;
+        }
 }

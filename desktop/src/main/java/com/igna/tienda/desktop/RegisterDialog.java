@@ -2,7 +2,7 @@ package com.igna.tienda.desktop;
 
 import com.igna.tienda.core.domain.enums.Rol;
 import com.igna.tienda.infra.services.AuthServiceTx;
-
+import com.igna.tienda.core.domain.value.Direccion;
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,6 +13,11 @@ public class RegisterDialog extends JDialog {
     private final JTextField nombreField = new JTextField(20);
     private final JTextField apellidoField = new JTextField(20);
     private final JTextField emailField = new JTextField(20);
+    private final JTextField calleField = new JTextField(20);
+    private final JTextField numeroField = new JTextField(20);
+    private final JTextField ciudadField = new JTextField(20);
+    private final JTextField provinciaField = new JTextField(20);
+    private final JTextField codPostalField = new JTextField(20);
     private final JPasswordField passwordField = new JPasswordField(20);
 
     private final JButton okBtn = new JButton("Crear cuenta");
@@ -24,7 +29,7 @@ public class RegisterDialog extends JDialog {
         super(owner, "Registro", true);
         this.authTx = authTx;
 
-        setMinimumSize(new Dimension(420, 260));
+        setMinimumSize(new Dimension(620, 460));
         setLocationRelativeTo(owner);
         setContentPane(buildContent());
         wireEvents();
@@ -55,6 +60,36 @@ public class RegisterDialog extends JDialog {
         form.add(new JLabel("Apellido:"), c);
         c.gridx = 1;
         form.add(apellidoField, c);
+        y++;
+
+        c.gridx = 0; c.gridy = y;
+        form.add(new JLabel("Calle"), c);
+        c.gridx = 1;
+        form.add(calleField, c);
+        y++;
+
+        c.gridx = 0; c.gridy = y;
+        form.add(new JLabel("Numero"), c);
+        c.gridx = 1;
+        form.add(numeroField, c);
+        y++;
+
+        c.gridx = 0; c.gridy = y;
+        form.add(new JLabel("Ciudad"), c);
+        c.gridx = 1;
+        form.add(ciudadField, c);
+        y++;
+
+        c.gridx = 0; c.gridy = y;
+        form.add(new JLabel("Provincia"), c);
+        c.gridx = 1;
+        form.add(provinciaField, c);
+        y++;
+
+        c.gridx = 0; c.gridy = y;
+        form.add(new JLabel("Codigo Postal"), c);
+        c.gridx = 1;
+        form.add(codPostalField, c);
         y++;
 
         c.gridx = 0; c.gridy = y;
@@ -89,11 +124,17 @@ public class RegisterDialog extends JDialog {
         String apellido = apellidoField.getText();
         String email = emailField.getText();
         String pass = new String(passwordField.getPassword());
-        
+        Direccion direccion = new Direccion(
+            calleField.getText(),
+            numeroField.getText(),
+            ciudadField.getText(),
+            provinciaField.getText(),
+            codPostalField.getText()
+        );
         setBusy(true);
         try {
             // usa tu AuthService corregido (registrarCliente)
-            authTx.registrar(nombre, apellido, email, pass, Rol.CLIENTE);
+            authTx.registrar(nombre, apellido, email, direccion,pass, Rol.CLIENTE);
 
             registeredEmail = email == null ? null : email.trim().toLowerCase();
 

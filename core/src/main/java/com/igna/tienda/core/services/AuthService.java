@@ -1,7 +1,7 @@
 package com.igna.tienda.core.services;
 
 import java.util.UUID;
-
+import com.igna.tienda.core.domain.value.Direccion;
 import com.igna.tienda.core.domain.Usuario;
 import com.igna.tienda.core.repositories.UsuarioRepository;
 import com.igna.tienda.core.domain.enums.Rol;
@@ -12,7 +12,7 @@ public class AuthService {
     }
 
     //CU-01: Registrar Cliente
-    public Usuario registrar(String nombre, String apellido, String email, String password, Rol rol) {
+    public Usuario registrar(String nombre, String apellido, String email, Direccion direccion, String password, Rol rol) {
 
         String emailNorm = normalizarEmail(email);
         String passwordVal = validarContraseña(password);
@@ -25,6 +25,7 @@ public class AuthService {
             nombre,
             apellido,
             emailNorm,
+            direccion,
             passwordVal,
             Rol.CLIENTE
         );

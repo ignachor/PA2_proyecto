@@ -2,6 +2,7 @@ package com.igna.tienda.desktop;
 
 import com.igna.tienda.infra.services.AuthServiceTx;
 import com.igna.tienda.core.domain.Usuario;
+import com.igna.tienda.infra.services.UsuarioServiceTx;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +10,7 @@ import java.awt.*;
 public class LoginFrame extends JFrame {
 
     private final AuthServiceTx authTx;
+    private final UsuarioServiceTx usuarioTx;
 
     private final JTextField emailField = new JTextField(24);
     private final JPasswordField passwordField = new JPasswordField(24);
@@ -16,9 +18,10 @@ public class LoginFrame extends JFrame {
     private final JButton registerBtn = new JButton("Registrarse");
     private final JLabel statusLabel = new JLabel(" ");
 
-    public LoginFrame(AuthServiceTx authTx) {
+    public LoginFrame(AuthServiceTx authTx, UsuarioServiceTx usuarioTx) {
         super("Login - Tienda");
         this.authTx = authTx;
+        this.usuarioTx = usuarioTx;
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(420, 220));
@@ -77,11 +80,12 @@ public class LoginFrame extends JFrame {
             Usuario u = authTx.iniciarSesion(email, pass);
             statusLabel.setText("Login OK: " + u.getEmail() + " (rol=" + u.getRol() + ")");
 
-            // UI mínima: mostrar “home” simple
-            JOptionPane.showMessageDialog(this,
-                    "Bienvenido " + u.getNombre() + " " + u.getApellido() + "\nRol: " + u.getRol(),
-                    "OK",
-                    JOptionPane.INFORMATION_MESSAGE);
+            // 1) Con login OK abrimos el menu y le pasamos el usuario logueado
+            // 2) Cerramos el login para que no quede abierto detras
+            MenuFrame menu = new MenuFrame(authTx, usuarioTx, u);
+            menu.setVisible(true);
+            dispose();
+
 
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(this,

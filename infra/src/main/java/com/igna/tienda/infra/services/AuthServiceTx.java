@@ -6,7 +6,7 @@ import com.igna.tienda.core.services.AuthService;
 import com.igna.tienda.infra.persistence.jpa.JpaUsuarioRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-
+import com.igna.tienda.core.domain.value.Direccion;
 public class AuthServiceTx {
 
     private final EntityManagerFactory emf;
@@ -15,7 +15,7 @@ public class AuthServiceTx {
         this.emf = emf;
     }
 
-    public Usuario registrar(String nombre, String apellido, String email, String password, Rol rol) {
+    public Usuario registrar(String nombre, String apellido, String email, Direccion direccion, String password, Rol rol) {
         EntityManager em = emf.createEntityManager();
         var tx = em.getTransaction();
         try {
@@ -24,7 +24,7 @@ public class AuthServiceTx {
             var repo = new JpaUsuarioRepository(em);
             var authCore = new AuthService(repo);
 
-            Usuario u = authCore.registrar(nombre, apellido, email, password, rol);
+            Usuario u = authCore.registrar(nombre, apellido, email, direccion, password, rol);
 
             tx.commit();
             return u;
