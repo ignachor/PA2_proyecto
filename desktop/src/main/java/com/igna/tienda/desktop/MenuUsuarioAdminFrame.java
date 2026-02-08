@@ -94,7 +94,7 @@ public class MenuUsuarioAdminFrame extends JFrame {
     }
 
     private void buscarUsuario() {
-        // Placeholder: aca irian las busquedas reales
+        // Placeholder: aca iria la busqueda real
         JOptionPane.showMessageDialog(this,
                 "Buscar usuario: " + buscarField.getText(),
                 "Buscar",
