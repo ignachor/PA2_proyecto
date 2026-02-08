@@ -13,24 +13,24 @@ public class DireccionFrame extends JDialog {
     private final UsuarioServiceTx usuarioTx;
     private Usuario usuarioActual;
 
-    private final JTextField calleField = new JTextField(24);
-    private final JTextField numeroField = new JTextField(24);
-    private final JTextField ciudadField = new JTextField(24);
-    private final JTextField provinciaField = new JTextField(24);
-    private final JTextField codPostalField = new JTextField(24);
-
-    private final JButton okBtn = new JButton("Guardar cambios");
-    private final JButton cancelBtn = new JButton("Cancelar");
+    private JTextField calleField;
+    private JTextField numeroField;
+    private JTextField ciudadField;
+    private JTextField provinciaField;
+    private JTextField codPostalField;
+    private JButton okBtn;
+    private JButton cancelBtn;
 
     private boolean updated = false;
 
     public DireccionFrame(Frame owner, UsuarioServiceTx usuarioTx, Usuario usuarioActual) {
-        super(owner, "Editar direccion", true);
+        super(owner, "Editar Dirección", true);
         this.usuarioTx = Objects.requireNonNull(usuarioTx, "usuarioTx requerido");
         this.usuarioActual = Objects.requireNonNull(usuarioActual, "usuarioActual requerido");
 
-        setMinimumSize(new Dimension(520, 300));
+        setMinimumSize(new Dimension(550, 480));
         setLocationRelativeTo(owner);
+        setResizable(false);
         setContentPane(buildContent());
         wireEvents();
         cargarDatosUsuario();
@@ -45,50 +45,83 @@ public class DireccionFrame extends JDialog {
     }
 
     private JPanel buildContent() {
-        JPanel root = new JPanel(new BorderLayout(12, 12));
-        root.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        JPanel root = new JPanel(new BorderLayout());
+        root.setBackground(ModernTheme.BG_PRIMARY);
 
-        JPanel form = new JPanel(new GridBagLayout());
+        // Header
+        JPanel header = new JPanel();
+        header.setBackground(ModernTheme.ACCENT);
+        header.setPreferredSize(new Dimension(550, 80));
+        header.setLayout(new GridBagLayout());
+        
+        JLabel titleLabel = ModernTheme.createTitleLabel("📍 Editar Dirección");
+        titleLabel.setForeground(Color.WHITE);
+        header.add(titleLabel);
+
+        // Form
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBackground(ModernTheme.BG_PRIMARY);
+        formPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
+        
         GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(6, 6, 6, 6);
-        c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 5, 10, 5);
+        c.weightx = 1.0;
 
         int y = 0;
 
-        c.gridx = 0; c.gridy = y;
-        form.add(new JLabel("Calle:"), c);
-        c.gridx = 1;
-        form.add(calleField, c);
-        y++;
+        // Calle
+        c.gridx = 0; c.gridy = y; c.gridwidth = 2;
+        formPanel.add(ModernTheme.createLabel("Calle"), c);
+        c.gridy = y + 1;
+        calleField = ModernTheme.createTextField(20);
+        formPanel.add(calleField, c);
+        y += 2;
 
-        c.gridx = 0; c.gridy = y;
-        form.add(new JLabel("Numero:"), c);
-        c.gridx = 1;
-        form.add(numeroField, c);
-        y++;
+        // Número
+        c.gridx = 0; c.gridy = y; c.gridwidth = 2;
+        formPanel.add(ModernTheme.createLabel("Número"), c);
+        c.gridy = y + 1;
+        numeroField = ModernTheme.createTextField(20);
+        formPanel.add(numeroField, c);
+        y += 2;
 
-        c.gridx = 0; c.gridy = y;
-        form.add(new JLabel("Ciudad:"), c);
-        c.gridx = 1;
-        form.add(ciudadField, c);
-        y++;
+        // Ciudad
+        c.gridx = 0; c.gridy = y; c.gridwidth = 2;
+        formPanel.add(ModernTheme.createLabel("Ciudad"), c);
+        c.gridy = y + 1;
+        ciudadField = ModernTheme.createTextField(20);
+        formPanel.add(ciudadField, c);
+        y += 2;
 
-        c.gridx = 0; c.gridy = y;
-        form.add(new JLabel("Provincia:"), c);
-        c.gridx = 1;
-        form.add(provinciaField, c);
-        y++;
+        // Provincia
+        c.gridx = 0; c.gridy = y; c.gridwidth = 2;
+        formPanel.add(ModernTheme.createLabel("Provincia"), c);
+        c.gridy = y + 1;
+        provinciaField = ModernTheme.createTextField(20);
+        formPanel.add(provinciaField, c);
+        y += 2;
 
-        c.gridx = 0; c.gridy = y;
-        form.add(new JLabel("Codigo postal:"), c);
-        c.gridx = 1;
-        form.add(codPostalField, c);
+        // Código Postal
+        c.gridx = 0; c.gridy = y; c.gridwidth = 2;
+        formPanel.add(ModernTheme.createLabel("Código Postal"), c);
+        c.gridy = y + 1;
+        codPostalField = ModernTheme.createTextField(20);
+        formPanel.add(codPostalField, c);
 
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        // Botones
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+        buttons.setBackground(ModernTheme.BG_SECONDARY);
+        buttons.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(189, 195, 199)));
+        
+        cancelBtn = ModernTheme.createSecondaryButton("CANCELAR");
+        okBtn = ModernTheme.createAccentButton("GUARDAR");
+        
         buttons.add(cancelBtn);
         buttons.add(okBtn);
 
-        root.add(form, BorderLayout.CENTER);
+        root.add(header, BorderLayout.NORTH);
+        root.add(formPanel, BorderLayout.CENTER);
         root.add(buttons, BorderLayout.SOUTH);
 
         return root;
@@ -113,11 +146,11 @@ public class DireccionFrame extends JDialog {
 
     private void doSave() {
         Direccion nueva = new Direccion(
-                calleField.getText(),
-                numeroField.getText(),
-                ciudadField.getText(),
-                provinciaField.getText(),
-                codPostalField.getText()
+                calleField.getText().trim(),
+                numeroField.getText().trim(),
+                ciudadField.getText().trim(),
+                provinciaField.getText().trim(),
+                codPostalField.getText().trim()
         );
 
         setBusy(true);
@@ -137,13 +170,13 @@ public class DireccionFrame extends JDialog {
             updated = true;
 
             JOptionPane.showMessageDialog(this,
-                    "Direccion actualizada correctamente.",
-                    "OK",
+                    "✓ Dirección actualizada correctamente",
+                    "Actualización exitosa",
                     JOptionPane.INFORMATION_MESSAGE);
             dispose();
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(this,
-                    ex.getMessage(),
+                    "Error al actualizar:\n" + ex.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         } finally {

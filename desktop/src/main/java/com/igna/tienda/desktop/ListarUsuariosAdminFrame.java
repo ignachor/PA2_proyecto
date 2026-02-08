@@ -12,10 +12,8 @@ public class ListarUsuariosAdminFrame extends JFrame {
 
     private final DefaultTableModel model;
     private final JTable tabla;
-    private final JButton seleccionarBtn = new JButton("Seleccionar");
-    // Se mantiene la lista para poder mapear la fila seleccionada al Usuario original
+    private JButton seleccionarBtn;
     private List<Usuario> usuarios;
-    // Callback al seleccionar un usuario (permite "volver" al menu anterior)
     private final Consumer<Usuario> onSeleccionar;
 
     public ListarUsuariosAdminFrame() {
@@ -27,24 +25,26 @@ public class ListarUsuariosAdminFrame extends JFrame {
     }
 
     public ListarUsuariosAdminFrame(List<Usuario> usuarios, Consumer<Usuario> onSeleccionar) {
-        super("Lista de Usuarios");
+        super("Lista Completa de Usuarios");
         this.onSeleccionar = onSeleccionar;
+        
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setMinimumSize(new Dimension(860, 420));
+        setMinimumSize(new Dimension(1000, 600));
         setLocationRelativeTo(null);
+        setResizable(true);
 
         model = new DefaultTableModel(
-                new Object[]{"ID", "Nombre", "Apellido", "DNI", "Email", "Rol", "Activo"}, 0
+                new Object[]{"ID", "Nombre", "Apellido", "DNI", "Email", "Rol", "Estado"}, 0
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
+        
         tabla = new JTable(model);
-        tabla.setRowHeight(24);
+        ModernTheme.styleTable(tabla);
         tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        seleccionarBtn.setEnabled(false);
 
         setContentPane(buildContent());
         wireEvents();
@@ -55,52 +55,85 @@ public class ListarUsuariosAdminFrame extends JFrame {
     }
 
     private JPanel buildContent() {
-        JPanel root = new JPanel(new BorderLayout(12, 12));
-        root.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        JPanel root = new JPanel(new BorderLayout());
+        root.setBackground(ModernTheme.BG_PRIMARY);
 
-        JLabel title = new JLabel("LISTA DE USUARIOS");
-        title.setFont(title.getFont().deriveFont(Font.BOLD, 16f));
+        // Header
         JPanel header = new JPanel(new BorderLayout());
-        header.add(title, BorderLayout.WEST);
+        header.setBackground(ModernTheme.PRIMARY_DARK);
+        header.setPreferredSize(new Dimension(1000, 90));
+        header.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        
+        JLabel titleLabel = new JLabel("📋 LISTA DE USUARIOS");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        titleLabel.setForeground(Color.WHITE);
+        
+        JLabel subtitle = new JLabel("Selecciona un usuario de la tabla");
+        subtitle.setFont(ModernTheme.FONT_BODY);
+        subtitle.setForeground(new Color(236, 240, 241));
+        
+        JPanel headerContent = new JPanel();
+        headerContent.setLayout(new BoxLayout(headerContent, BoxLayout.Y_AXIS));
+        headerContent.setBackground(ModernTheme.PRIMARY_DARK);
+        headerContent.add(titleLabel);
+        headerContent.add(Box.createVerticalStrut(5));
+        headerContent.add(subtitle);
+        
+        header.add(headerContent, BorderLayout.WEST);
 
+        // Tabla con scroll
         JScrollPane scroll = new JScrollPane(tabla);
-        scroll.setBorder(BorderFactory.createTitledBorder("Usuarios"));
+        scroll.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        scroll.getViewport().setBackground(Color.WHITE);
 
-        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
-        bottom.add(seleccionarBtn);
+        // Footer con botones
+        JPanel footer = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 15));
+        footer.setBackground(ModernTheme.BG_SECONDARY);
+        footer.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(189, 195, 199)));
+        
+        seleccionarBtn = ModernTheme.createPrimaryButton("SELECCIONAR USUARIO");
+        seleccionarBtn.setEnabled(false);
+        
+        footer.add(seleccionarBtn);
 
         root.add(header, BorderLayout.NORTH);
         root.add(scroll, BorderLayout.CENTER);
-        root.add(bottom, BorderLayout.SOUTH);
+        root.add(footer, BorderLayout.SOUTH);
 
         return root;
     }
 
     private void wireEvents() {
-        // Habilita/inhabilita el boton segun seleccion valida en la tabla
         tabla.getSelectionModel().addListSelectionListener(e -> {
             if (e.getValueIsAdjusting()) return;
             seleccionarBtn.setEnabled(tabla.getSelectedRow() >= 0);
         });
 
-        // Al seleccionar, dispara el callback y cierra el frame
         seleccionarBtn.addActionListener(e -> seleccionarUsuario());
+        
+        // Doble click en tabla también selecciona
+        tabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    seleccionarUsuario();
+                }
+            }
+        });
     }
 
     private void seleccionarUsuario() {
-        // Convierte la fila seleccionada (vista) a indice del modelo
         int viewRow = tabla.getSelectedRow();
         if (viewRow < 0) {
             seleccionarBtn.setEnabled(false);
             return;
         }
+        
         int modelRow = tabla.convertRowIndexToModel(viewRow);
-        // Verificacion basica de limites y lista
         if (usuarios == null || modelRow < 0 || modelRow >= usuarios.size()) {
             return;
         }
+        
         Usuario u = usuarios.get(modelRow);
-        // Hook al menu anterior
         if (onSeleccionar != null) {
             onSeleccionar.accept(u);
         }
@@ -108,12 +141,13 @@ public class ListarUsuariosAdminFrame extends JFrame {
     }
 
     public void cargarUsuarios(List<Usuario> usuarios) {
-        // Refresca la tabla con la lista recibida
         this.usuarios = usuarios;
         model.setRowCount(0);
+        
         if (usuarios == null || usuarios.isEmpty()) {
             return;
         }
+        
         for (Usuario u : usuarios) {
             model.addRow(new Object[]{
                     u.getId(),
@@ -122,7 +156,7 @@ public class ListarUsuariosAdminFrame extends JFrame {
                     u.getDni(),
                     u.getEmail(),
                     u.getRol(),
-                    u.esActivo() ? "SI" : "NO"
+                    u.esActivo() ? "✓ Activo" : "✗ Inactivo"
             });
         }
     }

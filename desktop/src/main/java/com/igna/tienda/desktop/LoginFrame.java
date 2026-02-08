@@ -13,53 +13,104 @@ public class LoginFrame extends JFrame {
     private final AuthServiceTx authTx;
     private final UsuarioServiceTx usuarioTx;
     private final AdminServiceTx adminTx;
-    private final JTextField emailField = new JTextField(24);
-    private final JPasswordField passwordField = new JPasswordField(24);
-    private final JButton loginBtn = new JButton("Iniciar sesión");
-    private final JButton registerBtn = new JButton("Registrarse");
-    private final JLabel statusLabel = new JLabel(" ");
+    
+    private JTextField emailField;
+    private JPasswordField passwordField;
+    private JButton loginBtn;
+    private JButton registerBtn;
+    private JLabel statusLabel;
 
     public LoginFrame(AuthServiceTx authTx, UsuarioServiceTx usuarioTx, AdminServiceTx adminTx) {
-        super("Login - Tienda");
+        super("Tienda - Iniciar Sesión");
         this.authTx = authTx;
         this.usuarioTx = usuarioTx;
         this.adminTx = adminTx;
+        
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(420, 220));
+        setMinimumSize(new Dimension(500, 600));
         setLocationRelativeTo(null);
+        setResizable(false);
 
         setContentPane(buildContent());
         wireEvents();
     }
 
     private JPanel buildContent() {
-        JPanel root = new JPanel(new BorderLayout(12, 12));
-        root.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        JPanel root = new JPanel(new BorderLayout());
+        root.setBackground(ModernTheme.BG_PRIMARY);
 
-        JPanel form = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(6, 6, 6, 6);
-        c.anchor = GridBagConstraints.WEST;
+        // Panel superior con degradado (simulado con color sólido)
+        JPanel header = new JPanel();
+        header.setBackground(ModernTheme.PRIMARY);
+        header.setPreferredSize(new Dimension(500, 120));
+        header.setLayout(new GridBagLayout());
+        
+        JLabel titleLabel = new JLabel("BIENVENIDO");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        titleLabel.setForeground(Color.WHITE);
+        header.add(titleLabel);
 
-        c.gridx = 0; c.gridy = 0;
-        form.add(new JLabel("Email:"), c);
-        c.gridx = 1;
-        form.add(emailField, c);
+        // Panel central con formulario
+        JPanel centerPanel = new JPanel();
+        centerPanel.setBackground(ModernTheme.BG_PRIMARY);
+        centerPanel.setLayout(new GridBagLayout());
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(40, 50, 40, 50));
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 0, 10, 0);
+        gbc.gridx = 0;
+        gbc.weightx = 1.0;
 
-        c.gridx = 0; c.gridy = 1;
-        form.add(new JLabel("Contraseña:"), c);
-        c.gridx = 1;
-        form.add(passwordField, c);
+        // Subtítulo
+        gbc.gridy = 0;
+        JLabel subtitle = ModernTheme.createSubtitleLabel("Inicia sesión en tu cuenta");
+        subtitle.setHorizontalAlignment(SwingConstants.CENTER);
+        centerPanel.add(subtitle, gbc);
 
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
-        buttons.add(registerBtn);
-        buttons.add(loginBtn);
+        // Email
+        gbc.gridy = 1;
+        JLabel emailLabel = ModernTheme.createLabel("Correo electrónico");
+        centerPanel.add(emailLabel, gbc);
 
-        root.add(form, BorderLayout.CENTER);
-        root.add(buttons, BorderLayout.SOUTH);
+        gbc.gridy = 2;
+        emailField = ModernTheme.createTextField(20);
+        centerPanel.add(emailField, gbc);
 
-        statusLabel.setForeground(Color.DARK_GRAY);
-        root.add(statusLabel, BorderLayout.NORTH);
+        // Password
+        gbc.gridy = 3;
+        gbc.insets = new Insets(20, 0, 10, 0);
+        JLabel passwordLabel = ModernTheme.createLabel("Contraseña");
+        centerPanel.add(passwordLabel, gbc);
+
+        gbc.gridy = 4;
+        gbc.insets = new Insets(10, 0, 10, 0);
+        passwordField = ModernTheme.createPasswordField(20);
+        centerPanel.add(passwordField, gbc);
+
+        // Status label
+        gbc.gridy = 5;
+        statusLabel = new JLabel(" ");
+        statusLabel.setFont(ModernTheme.FONT_SMALL);
+        statusLabel.setForeground(ModernTheme.TEXT_SECONDARY);
+        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        centerPanel.add(statusLabel, gbc);
+
+        // Botones
+        gbc.gridy = 6;
+        gbc.insets = new Insets(20, 0, 10, 0);
+        loginBtn = ModernTheme.createPrimaryButton("INICIAR SESIÓN");
+        loginBtn.setPreferredSize(new Dimension(300, 45));
+        centerPanel.add(loginBtn, gbc);
+
+        gbc.gridy = 7;
+        gbc.insets = new Insets(10, 0, 10, 0);
+        registerBtn = ModernTheme.createSecondaryButton("CREAR CUENTA");
+        registerBtn.setPreferredSize(new Dimension(300, 45));
+        centerPanel.add(registerBtn, gbc);
+
+        root.add(header, BorderLayout.NORTH);
+        root.add(centerPanel, BorderLayout.CENTER);
 
         return root;
     }
@@ -67,20 +118,22 @@ public class LoginFrame extends JFrame {
     private void wireEvents() {
         loginBtn.addActionListener(e -> doLogin());
         registerBtn.addActionListener(e -> openRegisterDialog());
-
-        // Enter para loguear
         passwordField.addActionListener(e -> doLogin());
     }
 
     private void doLogin() {
-        String email = emailField.getText();
+        String email = emailField.getText().trim();
         String pass = new String(passwordField.getPassword());
+
+        if (email.isEmpty() || pass.isEmpty()) {
+            showError("Por favor completa todos los campos");
+            return;
+        }
 
         setBusy(true);
         try {
             Usuario u = authTx.iniciarSesion(email, pass);
-            // 1) Con login OK abrimos el menu y le pasamos el usuario logueado
-            // 2) Cerramos el login para que no quede abierto detras
+            
             if (u.getRol() == Rol.CLIENTE) {
                 MenuFrame menu = new MenuFrame(authTx, usuarioTx, adminTx, u);
                 menu.setVisible(true);
@@ -90,12 +143,11 @@ public class LoginFrame extends JFrame {
                 admin.setVisible(true);
                 dispose();
             }
-            statusLabel.setText("Login OK: " + u.getEmail() + " (rol=" + u.getRol() + ")");
+            
+            statusLabel.setText("¡Bienvenido!");
+            statusLabel.setForeground(ModernTheme.SUCCESS);
         } catch (RuntimeException ex) {
-            JOptionPane.showMessageDialog(this,
-                    ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            showError(ex.getMessage());
         } finally {
             setBusy(false);
         }
@@ -105,14 +157,19 @@ public class LoginFrame extends JFrame {
         RegisterDialog dialog = new RegisterDialog(this, authTx);
         dialog.setVisible(true);
 
-        // si registró con éxito, precargá el email para login
         String registeredEmail = dialog.getRegisteredEmail();
         if (registeredEmail != null) {
             emailField.setText(registeredEmail);
             passwordField.setText("");
-            statusLabel.setText("Registrado OK. Iniciá sesión.");
+            statusLabel.setText("✓ Cuenta creada. Inicia sesión ahora");
+            statusLabel.setForeground(ModernTheme.SUCCESS);
             passwordField.requestFocusInWindow();
         }
+    }
+
+    private void showError(String message) {
+        statusLabel.setText("✗ " + message);
+        statusLabel.setForeground(ModernTheme.ERROR);
     }
 
     private void setBusy(boolean busy) {

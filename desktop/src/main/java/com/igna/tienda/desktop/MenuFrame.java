@@ -15,21 +15,22 @@ public class MenuFrame extends JFrame {
     private final AdminServiceTx adminTx;
     private Usuario usuarioActual;
 
-    private final JLabel nombreLabel = new JLabel();
-    private final JLabel emailLabel = new JLabel();
-    private final JButton editarPerfilBtn = new JButton("Editar perfil");
-    private final JButton cerrarSesionBtn = new JButton("Cerrar sesi\u00f3n");
+    private JLabel nombreLabel;
+    private JLabel emailLabel;
+    private JButton editarPerfilBtn;
+    private JButton cerrarSesionBtn;
 
     public MenuFrame(AuthServiceTx authTx, UsuarioServiceTx usuarioTx, AdminServiceTx adminTx, Usuario usuarioActual) {
-        super("Men\u00fa - Tienda");
+        super("Mi Cuenta - Tienda");
         this.authTx = authTx;
         this.usuarioTx = usuarioTx;
         this.adminTx = adminTx;
         this.usuarioActual = usuarioActual;
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setMinimumSize(new Dimension(420, 220));
+        setMinimumSize(new Dimension(600, 450));
         setLocationRelativeTo(null);
+        setResizable(false);
 
         setContentPane(buildContent());
         wireEvents();
@@ -37,19 +38,79 @@ public class MenuFrame extends JFrame {
     }
 
     private JPanel buildContent() {
-        JPanel root = new JPanel(new BorderLayout(12, 12));
-        root.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        JPanel root = new JPanel(new BorderLayout());
+        root.setBackground(ModernTheme.BG_PRIMARY);
 
-        JPanel info = new JPanel(new GridLayout(0, 1, 6, 6));
-        info.add(nombreLabel);
-        info.add(emailLabel);
+        // Header con degradado
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBackground(ModernTheme.PRIMARY);
+        header.setPreferredSize(new Dimension(600, 100));
+        header.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        
+        JLabel titleLabel = new JLabel("MI PERFIL");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        titleLabel.setForeground(Color.WHITE);
+        header.add(titleLabel, BorderLayout.WEST);
 
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
-        buttons.add(cerrarSesionBtn);
-        buttons.add(editarPerfilBtn);
+        // Panel central con información del usuario
+        JPanel centerPanel = new JPanel();
+        centerPanel.setBackground(ModernTheme.BG_PRIMARY);
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
 
-        root.add(info, BorderLayout.CENTER);
-        root.add(buttons, BorderLayout.SOUTH);
+        // Card con info del usuario
+        JPanel infoCard = new JPanel();
+        infoCard.setBackground(Color.WHITE);
+        infoCard.setLayout(new BoxLayout(infoCard, BoxLayout.Y_AXIS));
+        infoCard.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(189, 195, 199), 1),
+            BorderFactory.createEmptyBorder(25, 25, 25, 25)
+        ));
+        infoCard.setMaximumSize(new Dimension(500, 200));
+
+        // Ícono de usuario
+        JLabel iconLabel = new JLabel("👤");
+        iconLabel.setFont(new Font("Segoe UI", Font.PLAIN, 48));
+        iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        nombreLabel = new JLabel();
+        nombreLabel.setFont(ModernTheme.FONT_SUBTITLE);
+        nombreLabel.setForeground(ModernTheme.TEXT_PRIMARY);
+        nombreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        emailLabel = new JLabel();
+        emailLabel.setFont(ModernTheme.FONT_BODY);
+        emailLabel.setForeground(ModernTheme.TEXT_SECONDARY);
+        emailLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        infoCard.add(iconLabel);
+        infoCard.add(Box.createVerticalStrut(15));
+        infoCard.add(nombreLabel);
+        infoCard.add(Box.createVerticalStrut(5));
+        infoCard.add(emailLabel);
+
+        centerPanel.add(infoCard);
+        centerPanel.add(Box.createVerticalStrut(30));
+
+        // Panel de acciones
+        JPanel actionsPanel = new JPanel();
+        actionsPanel.setBackground(ModernTheme.BG_PRIMARY);
+        actionsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 0));
+        actionsPanel.setMaximumSize(new Dimension(500, 60));
+
+        editarPerfilBtn = ModernTheme.createPrimaryButton("✏️ EDITAR PERFIL");
+        editarPerfilBtn.setPreferredSize(new Dimension(200, 45));
+        
+        cerrarSesionBtn = ModernTheme.createSecondaryButton("🚪 CERRAR SESIÓN");
+        cerrarSesionBtn.setPreferredSize(new Dimension(200, 45));
+
+        actionsPanel.add(editarPerfilBtn);
+        actionsPanel.add(cerrarSesionBtn);
+
+        centerPanel.add(actionsPanel);
+
+        root.add(header, BorderLayout.NORTH);
+        root.add(centerPanel, BorderLayout.CENTER);
 
         return root;
     }
@@ -60,18 +121,14 @@ public class MenuFrame extends JFrame {
     }
 
     private void refreshUsuarioInfo() {
-        nombreLabel.setText("Usuario: " + usuarioActual.getNombre() + " " + usuarioActual.getApellido());
-        emailLabel.setText("Email: " + usuarioActual.getEmail());
+        nombreLabel.setText(usuarioActual.getNombre() + " " + usuarioActual.getApellido());
+        emailLabel.setText(usuarioActual.getEmail());
     }
 
     private void openEditarPerfil() {
-        // 1) Desde el menu abrimos el dialogo de edicion
-        // 2) Le pasamos este frame como owner para que quede modal
-        // 3) Le pasamos el usuario actual y el service tx para guardar
         EditarPerfilUsuario dialog = new EditarPerfilUsuario(this, usuarioTx, usuarioActual);
         dialog.setVisible(true);
 
-        // 4) Si se actualizo, tomamos el usuario actualizado y refrescamos la vista
         if (dialog.isUpdated()) {
             usuarioActual = dialog.getUsuarioActualizado();
             refreshUsuarioInfo();
@@ -79,8 +136,15 @@ public class MenuFrame extends JFrame {
     }
 
     private void doLogout() {
-        // Cerramos el menu y volvemos al login (nuevo frame)
-        dispose();
-        new LoginFrame(authTx, usuarioTx, adminTx).setVisible(true);
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Estás seguro de que deseas cerrar sesión?",
+                "Confirmar cierre de sesión",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            dispose();
+            new LoginFrame(authTx, usuarioTx, adminTx).setVisible(true);
+        }
     }
 }
