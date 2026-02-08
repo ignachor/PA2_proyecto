@@ -1,10 +1,13 @@
 package com.igna.tienda.infra.services;
 
+import com.igna.tienda.core.domain.Producto;
 import com.igna.tienda.core.domain.Usuario;
+import com.igna.tienda.infra.persistence.jpa.JpaProductoRepository;
 import com.igna.tienda.infra.persistence.jpa.JpaUsuarioRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import com.igna.tienda.core.services.AdminService;
+import com.igna.tienda.core.services.ProductoService;
 import java.util.List;
 public class AdminServiceTx {
     private final EntityManagerFactory emf;
@@ -83,4 +86,23 @@ public class AdminServiceTx {
             em.close();
         }
     }
+
+    //AGREGAR PRODUCTOS 
+    public void agregarProducto(Producto producto){
+        EntityManager em = emf.createEntityManager();
+        var tx = em.getTransaction();
+        try {
+            tx.begin();
+            var repo = new JpaProductoRepository(em);
+            var productoCore = new ProductoService(repo);
+            productoCore.AltaProducto(producto);
+            tx.commit();
+        } catch (RuntimeException e) {
+            if (tx.isActive()) tx.rollback();
+            throw e;
+        } finally {
+            em.close();
+
+    }
+}
 }
