@@ -5,6 +5,7 @@ import com.igna.tienda.core.repositories.UsuarioRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 
+import java.util.List;
 import java.util.UUID;
 
 public class JpaUsuarioRepository implements UsuarioRepository {
@@ -34,5 +35,9 @@ public class JpaUsuarioRepository implements UsuarioRepository {
      
         em.merge(usuario);
    
+     }
+
+     public List<Usuario> listarTodos() {
+        return em.createQuery("select u from Usuario u", Usuario.class).getResultList();
      }
 }

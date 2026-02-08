@@ -1,4 +1,5 @@
 package com.igna.tienda.core.services;
+import java.util.List;
 import java.util.UUID;
 import com.igna.tienda.core.domain.value.Direccion;
 import com.igna.tienda.core.domain.Usuario;
@@ -10,31 +11,30 @@ public class AdminService {
         this.uRepo = UsuarioRepository;
     }
  
-    //CU-18: Alta UsuARIO
-    public void AltaUsuario(String nombre, String apellido, String dni, Direccion direccion, String email, String password){
-        if (dni == null || dni.isBlank()) {
-            throw new IllegalArgumentException("DNI no proporcionado");
-        }
-        UUID id = UUID.randomUUID();
-        Usuario nuevoUsuario = new Usuario(id, nombre, apellido, dni, email, direccion, password, Rol.CLIENTE);
-        uRepo.guardar(nuevoUsuario);
-        //TODO: Implementar el método para dar de alta a un usuario
+    //CU-18: Activar Usuario
+    public void ActivarUsuario(Usuario usuario){
+        Usuario bajarUsuario = uRepo.buscarPorEmail(usuario.getEmail());
+        if(bajarUsuario != null && bajarUsuario.getId().toString().equals(usuario.getId().toString()))
+        {
+            bajarUsuario = new Usuario(bajarUsuario.getId(), bajarUsuario.getNombre(), bajarUsuario.getApellido(), bajarUsuario.getDni(), bajarUsuario.getEmail(), bajarUsuario.getDireccion(), bajarUsuario.getPassword(), bajarUsuario.getRol());
+            bajarUsuario.activar(); 
+            uRepo.guardar(bajarUsuario); 
+        } 
     }
 
-    //CU-19: Baja UsuARIO
+    //CU-19: Desactivar Usuario
     public void DesactivarUsuario(Usuario usuario){ 
         Usuario bajarUsuario = uRepo.buscarPorEmail(usuario.getEmail());
-        if(bajarUsuario != null && bajarUsuario.getId().toString().equals(usuario.getId().toString())){
+        if(bajarUsuario != null && bajarUsuario.getId().toString().equals(usuario.getId().toString()))
+        {
             bajarUsuario = new Usuario(bajarUsuario.getId(), bajarUsuario.getNombre(), bajarUsuario.getApellido(), bajarUsuario.getDni(), bajarUsuario.getEmail(), bajarUsuario.getDireccion(), bajarUsuario.getPassword(), bajarUsuario.getRol());
             bajarUsuario.desactivar(); 
             uRepo.guardar(bajarUsuario);
         }
-
-        //TODO: Implementar el método para dar de baja a un usuario
     }
 
     
-    //CU-17: Buscar UsuARIOS
+    //CU-20: Buscar Usuario por email
     public Usuario BuscarUsuario(String email){
          Usuario buscarUsuario = uRepo.buscarPorEmail(email);
          if(buscarUsuario != null){
@@ -44,9 +44,9 @@ public class AdminService {
     }
 
 
-    //CU-17: Listar UsuARIOS
-    public void ListarUsuarios(){
-        //TODO: Implementar el método para listar todos los usuarios
+    //CU-17: Listar Usuario
+    public List<Usuario> ListarUsuarios(){
+        return uRepo.listarTodos();
     }
 
 
@@ -83,3 +83,4 @@ public class AdminService {
         //TODO: Implementar el método para listar todos los pedidos
     }
 }
+

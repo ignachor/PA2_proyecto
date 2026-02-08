@@ -39,4 +39,9 @@ public class InMemoryUsuarioRepository implements UsuarioRepository {
         if (key == null) throw new IllegalArgumentException("email obligatorio");
         idByEmail.put(key, u.getId());
     }
+
+    @Override
+    public List<Usuario> listarTodos() {
+        return new ArrayList<>(byId.values());
+    }
 }

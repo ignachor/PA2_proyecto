@@ -20,6 +20,7 @@ public class MenuUsuarioAdminFrame extends JFrame {
 
     private final JTextArea detalleArea = new JTextArea(10, 28);
 
+    private final JButton activarBtn = new JButton("Activar Usuario");
     private final JButton desactivarBtn = new JButton("Desactivar Usuario");
     private final JButton verPedidosBtn = new JButton("Ver Pedidos");
     private final JButton listarBtn = new JButton("Listar Usuarios");
@@ -66,8 +67,11 @@ public class MenuUsuarioAdminFrame extends JFrame {
 
         JPanel right = new JPanel();
         right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
+        activarBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         desactivarBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         verPedidosBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        right.add(activarBtn);
+        right.add(Box.createVerticalStrut(10));
         right.add(desactivarBtn);
         right.add(Box.createVerticalStrut(10));
         right.add(verPedidosBtn);
@@ -88,6 +92,7 @@ public class MenuUsuarioAdminFrame extends JFrame {
 
     private void wireEvents() {
         buscarBtn.addActionListener(e -> buscarUsuario());
+        activarBtn.addActionListener(e -> activarUsuario());
         desactivarBtn.addActionListener(e -> desactivarUsuario());
         verPedidosBtn.addActionListener(e -> verPedidos());
         listarBtn.addActionListener(e -> listarUsuarios());
@@ -99,6 +104,39 @@ public class MenuUsuarioAdminFrame extends JFrame {
                 "Buscar usuario: " + buscarField.getText(),
                 "Buscar",
                 JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void activarUsuario() {
+        String email = buscarField.getText();
+        if (email == null || email.isBlank()) {
+            JOptionPane.showMessageDialog(this,
+                    "Ingresa el email del usuario a activar.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Estas seguro de activarlo?",
+                "Confirmar",
+                JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            adminTx.activarUsuarioPorEmail(email);
+            detalleArea.setText("Usuario activado: " + email);
+            JOptionPane.showMessageDialog(this,
+                    "Usuario activado correctamente.",
+                    "OK",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this,
+                    ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void desactivarUsuario() {
@@ -143,10 +181,46 @@ public class MenuUsuarioAdminFrame extends JFrame {
     }
 
     private void listarUsuarios() {
-        // Placeholder: aca iria el listado real
-        JOptionPane.showMessageDialog(this,
-                "Listar usuarios (pendiente).",
-                "Usuarios",
-                JOptionPane.INFORMATION_MESSAGE);
+        try {
+            var usuarios = adminTx.listarUsuarios();
+            // Abre el listado y define el callback de seleccion
+            ListarUsuariosAdminFrame frame = new ListarUsuariosAdminFrame(usuarios, this::onUsuarioSeleccionado);
+            frame.setVisible(true);
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this,
+                    ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void onUsuarioSeleccionado(Usuario u) {
+        if (u == null) return;
+        // Autocompleta el email para facilitar la busqueda y muestra los datos
+        buscarField.setText(u.getEmail());
+        detalleArea.setText(renderUsuario(u));
+        buscarField.requestFocusInWindow();
+    }
+
+    private String renderUsuario(Usuario u) {
+        // Formatea los datos del usuario seleccionado para mostrar en el detalle
+        StringBuilder sb = new StringBuilder();
+        sb.append("Usuario seleccionado").append('\n');
+        sb.append("ID: ").append(u.getId()).append('\n');
+        sb.append("Nombre: ").append(u.getNombre()).append('\n');
+        sb.append("Apellido: ").append(u.getApellido()).append('\n');
+        sb.append("DNI: ").append(u.getDni()).append('\n');
+        sb.append("Email: ").append(u.getEmail()).append('\n');
+        sb.append("Rol: ").append(u.getRol()).append('\n');
+        sb.append("Activo: ").append(u.esActivo() ? "SI" : "NO").append('\n');
+        if (u.getDireccion() != null) {
+            sb.append("Direccion: ")
+              .append(u.getDireccion().getCalle()).append(' ')
+              .append(u.getDireccion().getNumero()).append(", ")
+              .append(u.getDireccion().getCiudad()).append(", ")
+              .append(u.getDireccion().getProvincia()).append(" (")
+              .append(u.getDireccion().getCodigoPostal()).append(')');
+        }
+        return sb.toString();
     }
 }
