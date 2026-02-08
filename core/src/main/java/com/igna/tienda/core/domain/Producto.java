@@ -1,22 +1,40 @@
 package com.igna.tienda.core.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "producto")
 public class Producto {
-    String id;
-    String nombre;
-    String descripcion;
-    String categoria;
-    double precio;
-    int cantidad;
-    int cantidadMinimo;
-    int fechaVencimiento;
-    boolean stock; // Indica si el producto está en stock o no
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false)
+    private String nombre;
+    @Column(nullable = false)
+    private String descripcion;
+    @Column(nullable = false)
+    private String categoria;
+    @Column(nullable = false)
+    private double precio;
+    @Column(nullable = false)
+    private int cantidad;
+    @Column(nullable = false)
+    private int cantidadMinimo;
+    @Column(nullable = false)
+    private int fechaVencimiento;
+    @Column(nullable = false)
+    private boolean stock; // Indica si el producto está en stock o no
 
     public Producto(){
 
     }
 
-    public Producto(String id, String nombre, String descripcion, String categoria, double precio, int cantidad, int cantidadMinimo, boolean stock) {
-        this.id = id;
+    public Producto(String nombre, String descripcion, String categoria, double precio, int cantidad, int cantidadMinimo, boolean stock) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.categoria = categoria;
@@ -26,7 +44,7 @@ public class Producto {
         this.stock = stock;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

@@ -8,6 +8,7 @@
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
     <class>com.igna.tienda.core.domain.Usuario</class>
+    <class>com.igna.tienda.core.domain.Producto</class>
 
     <properties>
       <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
