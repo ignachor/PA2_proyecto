@@ -1,10 +1,14 @@
 package com.igna.tienda.infra.persistence.jpa;
 
 import java.util.List;
+
+import javax.management.RuntimeErrorException;
+
 import com.igna.tienda.core.repositories.ProductoRepository;
 import jakarta.persistence.EntityManager;
 
 import com.igna.tienda.core.domain.Producto;
+import com.igna.tienda.core.domain.enums.CategoriaProducto;
 
 public class JpaProductoRepository implements ProductoRepository {
 private final EntityManager em;
@@ -58,6 +62,17 @@ private final EntityManager em;
             return resultados.isEmpty() ? null : resultados.get(0);
         } catch (Exception e) {
             throw new RuntimeException("Error al buscar el producto por nombre", e);
+        }
+    }
+
+    @Override 
+    public List<Producto> buscarProductosPorCategoria(CategoriaProducto categoriaProducto)
+    {
+        try{
+            return em.createQuery("select p from Producto p where p.categoria = :categoria", 
+            Producto.class).setParameter("categoria", categoriaProducto).getResultList();
+        }catch(Exception e){
+            throw new RuntimeException("Error al buscar productos por categoria", e);
         }
     }
 }

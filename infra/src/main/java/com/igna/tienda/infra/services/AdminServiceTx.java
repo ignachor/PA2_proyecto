@@ -2,6 +2,7 @@ package com.igna.tienda.infra.services;
 
 import com.igna.tienda.core.domain.Producto;
 import com.igna.tienda.core.domain.Usuario;
+import com.igna.tienda.core.domain.enums.CategoriaProducto;
 import com.igna.tienda.infra.persistence.jpa.JpaProductoRepository;
 import com.igna.tienda.infra.persistence.jpa.JpaUsuarioRepository;
 import jakarta.persistence.EntityManager;
@@ -153,7 +154,7 @@ public class AdminServiceTx {
         }
     }
 
-        //LISTAR PRODUCTOS
+    //Buscar Productos 
 
     public Producto buscarProducto(String nombreBuscar){
         EntityManager em = emf.createEntityManager();
@@ -161,6 +162,21 @@ public class AdminServiceTx {
             var repo = new JpaProductoRepository(em);
             var productoCore = new ProductoService(repo);
             return productoCore.BuscarProducto(nombreBuscar);
+        } finally {
+            em.close();
+        }
+    }
+
+    //Buscar Productos por Categoria
+
+    public List<Producto> buscarProductosPorCategoria(CategoriaProducto categoriaProducto)
+    {
+
+        EntityManager em = emf.createEntityManager();
+        try {
+            var repo = new JpaProductoRepository(em);
+            var productoCore = new ProductoService(repo);
+            return productoCore.BuscarProductoCategoria(categoriaProducto);
         } finally {
             em.close();
         }

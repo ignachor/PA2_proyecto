@@ -1,6 +1,7 @@
 package com.igna.tienda.core.services;
 
 import com.igna.tienda.core.domain.Producto;
+import com.igna.tienda.core.domain.enums.CategoriaProducto;
 import com.igna.tienda.core.repositories.ProductoRepository;
 import java.util.List;
 public class ProductoService {
@@ -108,8 +109,6 @@ public class ProductoService {
         return pRepo.listarProductos();
         }   
 
-
-
     //CU- : Buscar Productos
     public Producto BuscarProducto(String nombre){
         Producto buscarProducto = pRepo.buscarPorNombre(nombre);
@@ -118,5 +117,10 @@ public class ProductoService {
             return buscarProducto;
         }
         return null;
+    }
+
+    //CU- : Buscar Productos por categoria 
+    public List<Producto> BuscarProductoCategoria(CategoriaProducto categoriaProducto){
+        return pRepo.buscarProductosPorCategoria(categoriaProducto);
     }
 }

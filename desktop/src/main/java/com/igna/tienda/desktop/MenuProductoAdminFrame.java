@@ -2,12 +2,15 @@ package com.igna.tienda.desktop;
 
 import com.igna.tienda.core.domain.Producto;
 import com.igna.tienda.core.domain.Usuario;
+import com.igna.tienda.core.domain.enums.CategoriaProducto;
 import com.igna.tienda.infra.services.AdminServiceTx;
 import com.igna.tienda.infra.services.AuthServiceTx;
 import com.igna.tienda.infra.services.UsuarioServiceTx;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuProductoAdminFrame extends JFrame {
 
@@ -15,21 +18,12 @@ public class MenuProductoAdminFrame extends JFrame {
     private final UsuarioServiceTx usuarioTx;
     private final AdminServiceTx adminTx;
     private final Usuario adminActual;
-    
 
     private final JTextField buscarField = ModernTheme.createTextField(24);
     private final JButton buscarBtn = ModernTheme.createSecondaryButton("Buscar");
 
-    private final JComboBox<String> categoriaCombo = new JComboBox<>(new String[] {
-            "Todas",
-            "Lácteos",
-            "Bebidas",
-            "Almacén",
-            "Congelados",
-            "Limpieza",
-            "Higiene",
-            "Otros"
-    });
+    // MODIFICACION: combo cargado desde el enum CategoriaProducto + opcion Todas.
+    private final JComboBox<CategoriaFiltroItem> categoriaCombo = new JComboBox<>(buildCategoriaModel());
 
     private final JTextArea detalleArea = ModernTheme.createTextArea(14, 32);
 
@@ -61,7 +55,7 @@ public class MenuProductoAdminFrame extends JFrame {
 
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(ModernTheme.BG_PRIMARY);
-        JLabel title = ModernTheme.createTitleLabel("MENÚ PRODUCTOS");
+        JLabel title = ModernTheme.createTitleLabel("MENU PRODUCTOS");
         header.add(title, BorderLayout.WEST);
 
         JPanel searchPanel = new JPanel(new BorderLayout(8, 8));
@@ -83,7 +77,7 @@ public class MenuProductoAdminFrame extends JFrame {
         JPanel categoriaPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         categoriaPanel.setBackground(ModernTheme.BG_PRIMARY);
         categoriaCombo.setFont(ModernTheme.FONT_BODY);
-        categoriaCombo.setPreferredSize(new Dimension(180, 40));
+        categoriaCombo.setPreferredSize(new Dimension(220, 40));
         categoriaPanel.add(categoriaCombo);
         top.add(categoriaPanel, BorderLayout.SOUTH);
 
@@ -116,6 +110,8 @@ public class MenuProductoAdminFrame extends JFrame {
 
     private void wireEvents() {
         buscarBtn.addActionListener(e -> buscarProducto());
+        // MODIFICACION: al cambiar categoria se ejecuta la busqueda por categoria.
+        categoriaCombo.addActionListener(e -> filtrarPorCategoria());
         agregarBtn.addActionListener(e -> agregarProducto());
         eliminarBtn.addActionListener(e -> eliminarProducto());
         modificarBtn.addActionListener(e -> modificarProducto());
@@ -138,6 +134,31 @@ public class MenuProductoAdminFrame extends JFrame {
                 return;
             }
             detalleArea.setText(renderProducto(productoBuscado));
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this,
+                    ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // IMPLEMENTACION: usa el CU BuscarProductosPorCategoria y muestra el resultado en detalleArea.
+    private void filtrarPorCategoria() {
+        CategoriaFiltroItem seleccion = (CategoriaFiltroItem) categoriaCombo.getSelectedItem();
+        if (seleccion == null) {
+            return;
+        }
+
+        try {
+            List<Producto> productos;
+            if (seleccion.esTodas()) {
+                // MODIFICACION: opcion Todas lista todo el catalogo.
+                productos = adminTx.listaProductos();
+            } else {
+                // MODIFICACION: categoria puntual llama al CU nuevo del servicio transaccional.
+                productos = adminTx.buscarProductosPorCategoria(seleccion.getCategoria());
+            }
+            detalleArea.setText(renderListaProductos(productos, seleccion.getLabel()));
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(this,
                     ex.getMessage(),
@@ -178,12 +199,76 @@ public class MenuProductoAdminFrame extends JFrame {
         sb.append("ID: ").append(p.getId()).append('\n');
         sb.append("Nombre: ").append(p.getNombre()).append('\n');
         sb.append("Descripcion: ").append(p.getDescripcion()).append('\n');
-        sb.append("Categoria: ").append(p.getCategoria()).append('\n');
+        sb.append("Categoria: ").append(p.getCategoria() == null ? "-" : p.getCategoria().getDescripcion()).append('\n');
         sb.append("Precio: ").append(p.getPrecio()).append('\n');
         sb.append("Cantidad: ").append(p.getCantidad()).append('\n');
         sb.append("Cantidad minima: ").append(p.getCantidadMinimo()).append('\n');
         sb.append("Fecha vencimiento: ").append(p.getFechaVencimiento()).append('\n');
         sb.append("Stock: ").append(p.getStock() ? "SI" : "NO");
         return sb.toString();
+    }
+
+    // IMPLEMENTACION: render para lista de productos por categoria.
+    private String renderListaProductos(List<Producto> productos, String categoriaLabel) {
+        if (productos == null || productos.isEmpty()) {
+            return "No hay productos para la categoria: " + categoriaLabel;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Productos en categoria: ").append(categoriaLabel).append('\n');
+        sb.append("Cantidad encontrada: ").append(productos.size()).append("\n\n");
+
+        for (Producto p : productos) {
+            sb.append(renderProducto(p)).append("\n\n");
+        }
+
+        return sb.toString().trim();
+    }
+
+    // IMPLEMENTACION: model del combo con opcion Todas + categorias del enum.
+    private static DefaultComboBoxModel<CategoriaFiltroItem> buildCategoriaModel() {
+        List<CategoriaFiltroItem> items = new ArrayList<>();
+        items.add(CategoriaFiltroItem.todas());
+        for (CategoriaProducto categoria : CategoriaProducto.values()) {
+            items.add(CategoriaFiltroItem.deCategoria(categoria));
+        }
+        return new DefaultComboBoxModel<>(items.toArray(new CategoriaFiltroItem[0]));
+    }
+
+    // IMPLEMENTACION: wrapper para mostrar etiqueta amigable y mantener el enum asociado.
+    private static final class CategoriaFiltroItem {
+        private final String label;
+        private final CategoriaProducto categoria;
+
+        private CategoriaFiltroItem(String label, CategoriaProducto categoria) {
+            this.label = label;
+            this.categoria = categoria;
+        }
+
+        private static CategoriaFiltroItem todas() {
+            return new CategoriaFiltroItem("Todas", null);
+        }
+
+        private static CategoriaFiltroItem deCategoria(CategoriaProducto categoria) {
+            return new CategoriaFiltroItem(categoria.getDescripcion(), categoria);
+        }
+
+        private boolean esTodas() {
+            return categoria == null;
+        }
+
+        private CategoriaProducto getCategoria() {
+            return categoria;
+        }
+
+        private String getLabel() {
+            return label;
+        }
+
+        @Override
+        public String toString() {
+            // MODIFICACION: define el texto visible en el JComboBox.
+            return label;
+        }
     }
 }
