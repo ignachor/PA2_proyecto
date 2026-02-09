@@ -117,7 +117,7 @@ public class EditarPerfilUsuario extends JDialog {
         // Botón de dirección
         c.gridx = 0; c.gridy = y; c.gridwidth = 2;
         c.insets = new Insets(20, 5, 10, 5);
-        direccionBtn = ModernTheme.createAccentButton("📍 EDITAR DIRECCIÓN");
+        direccionBtn = ModernTheme.createAccentButton(" EDITAR DIRECCIÓN");
         direccionBtn.setPreferredSize(new Dimension(250, 40));
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnPanel.setBackground(ModernTheme.BG_PRIMARY);
@@ -214,7 +214,7 @@ public class EditarPerfilUsuario extends JDialog {
 
             updated = true;
             JOptionPane.showMessageDialog(this,
-                    "✓ Perfil actualizado correctamente",
+                    " Perfil actualizado correctamente",
                     "Actualización exitosa",
                     JOptionPane.INFORMATION_MESSAGE);
             dispose();

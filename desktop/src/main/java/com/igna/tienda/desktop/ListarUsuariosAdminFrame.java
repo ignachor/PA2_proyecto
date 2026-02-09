@@ -64,7 +64,7 @@ public class ListarUsuariosAdminFrame extends JFrame {
         header.setPreferredSize(new Dimension(1000, 90));
         header.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
         
-        JLabel titleLabel = new JLabel("📋 LISTA DE USUARIOS");
+        JLabel titleLabel = new JLabel("LISTA DE USUARIOS");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         titleLabel.setForeground(Color.WHITE);
         

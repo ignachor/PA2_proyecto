@@ -70,7 +70,7 @@ public class RegisterDialog extends JDialog {
 
         // Sección: Datos Personales
         c.gridx = 0; c.gridy = y; c.gridwidth = 2;
-        JLabel seccionPersonal = ModernTheme.createSubtitleLabel("📋 Datos Personales");
+        JLabel seccionPersonal = ModernTheme.createSubtitleLabel("Datos Personales");
         form.add(seccionPersonal, c);
         y++;
 
@@ -102,7 +102,7 @@ public class RegisterDialog extends JDialog {
         // Sección: Dirección
         c.gridx = 0; c.gridy = y; c.gridwidth = 2;
         c.insets = new Insets(20, 5, 8, 5);
-        JLabel seccionDireccion = ModernTheme.createSubtitleLabel("📍 Dirección");
+        JLabel seccionDireccion = ModernTheme.createSubtitleLabel("Dirección");
         form.add(seccionDireccion, c);
         y++;
         c.insets = new Insets(8, 5, 8, 5);
@@ -151,7 +151,7 @@ public class RegisterDialog extends JDialog {
         // Sección: Acceso
         c.gridx = 0; c.gridy = y; c.gridwidth = 2;
         c.insets = new Insets(20, 5, 8, 5);
-        JLabel seccionAcceso = ModernTheme.createSubtitleLabel("🔐 Datos de Acceso");
+        JLabel seccionAcceso = ModernTheme.createSubtitleLabel(" Datos de Acceso");
         form.add(seccionAcceso, c);
         y++;
         c.insets = new Insets(8, 5, 8, 5);
@@ -232,7 +232,7 @@ public class RegisterDialog extends JDialog {
             registeredEmail = email.toLowerCase();
 
             JOptionPane.showMessageDialog(this,
-                    "✓ Cuenta creada exitosamente\n\nYa puedes iniciar sesión",
+                    "Cuenta creada exitosamente\n\nYa puedes iniciar sesión",
                     "Registro Completado",
                     JOptionPane.INFORMATION_MESSAGE);
 

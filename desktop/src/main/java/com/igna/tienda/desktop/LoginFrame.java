@@ -161,7 +161,7 @@ public class LoginFrame extends JFrame {
         if (registeredEmail != null) {
             emailField.setText(registeredEmail);
             passwordField.setText("");
-            statusLabel.setText("✓ Cuenta creada. Inicia sesión ahora");
+            statusLabel.setText("Cuenta creada. Inicia sesión ahora");
             statusLabel.setForeground(ModernTheme.SUCCESS);
             passwordField.requestFocusInWindow();
         }

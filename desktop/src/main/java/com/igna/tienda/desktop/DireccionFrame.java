@@ -54,7 +54,7 @@ public class DireccionFrame extends JDialog {
         header.setPreferredSize(new Dimension(550, 80));
         header.setLayout(new GridBagLayout());
         
-        JLabel titleLabel = ModernTheme.createTitleLabel("📍 Editar Dirección");
+        JLabel titleLabel = ModernTheme.createTitleLabel(" Editar Dirección");
         titleLabel.setForeground(Color.WHITE);
         header.add(titleLabel);
 
