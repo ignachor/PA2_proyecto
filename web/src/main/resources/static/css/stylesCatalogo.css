@@ -1,0 +1,99 @@
+/* Catalogo page styles aligned with styles.css palette */
+
+:root {
+  /* Reuse global tokens from styles.css */
+  --catalogo-bg: var(--bg-light);
+  --catalogo-card: var(--bg-white);
+  --catalogo-border: #cfe8f8;
+}
+
+body {
+  background-color: var(--catalogo-bg);
+  color: var(--text-dark);
+}
+
+h2.fw-bold {
+  letter-spacing: 0.3px;
+}
+
+.card {
+  border: 1px solid var(--catalogo-border);
+  background-color: var(--catalogo-card);
+}
+
+.card-body {
+  padding: 1.25rem 1.25rem 1.4rem;
+}
+
+.producto-card {
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.producto-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.badge.bg-primary {
+  background-color: var(--primary) !important;
+}
+
+.card-title {
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.card-text {
+  min-height: 3rem;
+}
+
+.producto-precio {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.producto-stock {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-gray);
+}
+
+.producto-stock.sin-stock {
+  color: var(--danger);
+}
+
+.input-group-text {
+  background: var(--bg-card);
+  border-color: var(--catalogo-border);
+  font-weight: 600;
+}
+
+.form-control,
+.form-select {
+  border-color: var(--catalogo-border);
+}
+
+.btn-outline-secondary {
+  border-color: var(--catalogo-border);
+  color: var(--text-gray);
+}
+
+.btn-outline-secondary:hover {
+  background: var(--bg-card);
+  color: var(--text-dark);
+}
+
+.btn-secondary {
+  background-color: #cfe8f8;
+  border-color: #cfe8f8;
+  color: var(--text-dark);
+}
+
+.row.g-4 {
+  margin-top: 0.2rem;
+}
+
+.text-muted {
+  color: var(--text-gray) !important;
+}

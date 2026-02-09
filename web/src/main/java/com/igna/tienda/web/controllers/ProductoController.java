@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
- * Controller para el catálogo de productos (vista de CLIENTE).
- * 
- * Reutiliza ProductoServiceTx de la capa infra.
+ * Controller para la tienda de productos (vista CLIENTE).
  */
 @Controller
-@RequestMapping("/catalogo")
+@RequestMapping({"/tiendaCliente", "/catalogo"})
 public class ProductoController {
 
     private final ProductoServiceTx productoService;
@@ -29,35 +28,43 @@ public class ProductoController {
     }
 
     /**
-     * GET /catalogo - Listar todos los productos activos
+     * GET /tiendaCliente - Lista productos activos con filtros opcionales.
      */
     @GetMapping
     public String catalogo(@RequestParam(value = "categoria", required = false) CategoriaProducto categoria,
-                          @RequestParam(value = "busqueda", required = false) String busqueda,
-                          Authentication auth,
-                          Model model) {
+                           @RequestParam(value = "busqueda", required = false) String busqueda,
+                           Authentication auth,
+                           Model model) {
         try {
-            List<Producto> productos;
+            List<Producto> productos = productoService.listarProductosActivos();
+            String busquedaNormalizada = busqueda == null ? "" : busqueda.trim();
 
-            // Filtrar por categoría o búsqueda
             if (categoria != null) {
-                productos = productoService.buscarProductosPorCategoria(categoria);
-            } else {
-                productos = productoService.listarProductosActivos();
+                productos = productos.stream()
+                        .filter(producto -> producto.getCategoria() == categoria)
+                        .toList();
+            }
+
+            if (!busquedaNormalizada.isEmpty()) {
+                String criterio = busquedaNormalizada.toLowerCase(Locale.ROOT);
+                productos = productos.stream()
+                        .filter(producto -> producto.getNombre() != null
+                                && producto.getNombre().toLowerCase(Locale.ROOT).contains(criterio))
+                        .toList();
             }
 
             model.addAttribute("productos", productos);
             model.addAttribute("categorias", CategoriaProducto.values());
             model.addAttribute("categoriaSeleccionada", categoria);
+            model.addAttribute("busqueda", busquedaNormalizada);
             model.addAttribute("usuario", auth.getName());
 
-            return "catalogo";
-
+            return "tiendaCliente";
         } catch (Exception e) {
-            model.addAttribute("error", "Error al cargar catálogo: " + e.getMessage());
+            model.addAttribute("error", "Error al cargar tienda: " + e.getMessage());
             model.addAttribute("productos", List.of());
             model.addAttribute("categorias", CategoriaProducto.values());
-            return "catalogo";
+            return "tiendaCliente";
         }
     }
 }

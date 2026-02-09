@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -26,7 +26,7 @@
                             <div class="col-md-6">
                                 <h5 class="mb-1" th:text="${item.producto.nombre}">Producto</h5>
                                 <p class="text-muted mb-0" th:text="${item.producto.categoria}">
-                                    Categoría
+                                    CategorÃ­a
                                 </p>
                             </div>
                             
@@ -55,7 +55,7 @@
                             </div>
                             
                             <div class="col-md-2">
-                                <!-- Botón Eliminar -->
+                                <!-- BotÃ³n Eliminar -->
                                 <form th:action="@{/carrito/eliminar}" method="post" 
                                       class="d-inline">
                                     <input type="hidden" name="productoId" 
@@ -100,15 +100,15 @@
                                 </h5>
                             </div>
                             
-                            <!-- Botón Finalizar Compra -->
+                            <!-- BotÃ³n Finalizar Compra -->
                             <form th:action="@{/carrito/finalizar}" method="post">
                                 <button type="submit" class="btn btn-success w-100 mb-2">
                                     <i class="bi bi-check-circle"></i> Finalizar Compra
                                 </button>
                             </form>
                             
-                            <a th:href="@{/catalogo}" class="btn btn-outline-primary w-100">
-                                <i class="bi bi-arrow-left"></i> Seguir Comprando
+                            <a th:href="@{/tiendaCliente}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-arrow-left"></i> Volver a Tienda
                             </a>
                         </div>
                     </div>
@@ -116,16 +116,17 @@
             </div>
         </div>
         
-        <!-- Si el carrito está vacío -->
+        <!-- Si el carrito estÃ¡ vacÃ­o -->
         <div th:if="${carrito == null or carrito.items.isEmpty()}" 
              class="text-center py-5">
             <i class="bi bi-cart-x display-1 text-muted"></i>
-            <h3 class="mt-4">Tu carrito está vacío</h3>
-            <p class="text-muted">Agrega productos desde el catálogo</p>
-            <a th:href="@{/catalogo}" class="btn btn-primary btn-lg mt-3">
-                <i class="bi bi-grid"></i> Ir al Catálogo
+            <h3 class="mt-4">Tu carrito estÃ¡ vacÃ­o</h3>
+            <p class="text-muted">Agrega productos desde la tienda</p>
+            <a th:href="@{/tiendaCliente}" class="btn btn-primary btn-lg mt-3">
+                <i class="bi bi-shop"></i> Ir a la Tienda
             </a>
         </div>
     </div>
 </body>
 </html>
+

@@ -176,6 +176,42 @@ body {
 }
 
 /* ===================================================================
+   TIENDA CLIENTE
+   =================================================================== */
+
+.tienda-cliente .form-label {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.tienda-header {
+    align-items: center;
+}
+
+.tienda-busqueda .input-group {
+    box-shadow: var(--shadow-sm);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.tienda-busqueda .form-control {
+    border-right: none;
+}
+
+.tienda-busqueda .btn {
+    border-radius: 0;
+}
+
+.tienda-panel {
+    border: 1px solid var(--bg-card);
+    background-color: var(--bg-white);
+}
+
+.tienda-acciones .btn {
+    min-width: 200px;
+}
+
+/* ===================================================================
    CARRITO
    =================================================================== */
 
@@ -325,5 +361,9 @@ body {
     
     .table {
         font-size: 0.875rem;
+    }
+
+    .tienda-acciones .btn {
+        width: 100%;
     }
 }

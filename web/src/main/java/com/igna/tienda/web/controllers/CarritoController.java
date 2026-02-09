@@ -65,14 +65,14 @@ public class CarritoController {
             carritoService.agregarProductoAlCarrito(clienteId, productoId, cantidad);
 
             redirectAttributes.addFlashAttribute("mensaje", "Producto agregado al carrito");
-            return "redirect:/catalogo";
+            return "redirect:/tiendaCliente";
 
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/catalogo";
+            return "redirect:/tiendaCliente";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al agregar producto: " + e.getMessage());
-            return "redirect:/catalogo";
+            return "redirect:/tiendaCliente";
         }
     }
 

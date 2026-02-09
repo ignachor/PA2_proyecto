@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 
                 // Rutas de CLIENTE
-                .requestMatchers("/catalogo", "/carrito/**", "/pedidos/**", "/perfil/**").hasRole("CLIENTE")
+                .requestMatchers("/tiendaCliente", "/catalogo", "/carrito/**", "/pedidos/**", "/perfil/**").hasRole("CLIENTE")
                 
                 // Cualquier otra ruta requiere autenticación
                 .anyRequest().authenticated()
@@ -49,7 +49,7 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/catalogo", true)
+                .defaultSuccessUrl("/tiendaCliente", true)
                 .failureUrl("/login?error=true")
                 .permitAll()
             )
