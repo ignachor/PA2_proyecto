@@ -1,11 +1,14 @@
 package com.igna.tienda.core.domain;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import com.igna.tienda.core.domain.enums.CategoriaProducto;
+import com.igna.tienda.core.domain.enums.CategoriaProductoConverter;
 
 @Entity
 @Table(name = "producto")
@@ -18,7 +21,8 @@ public class Producto {
     @Column(nullable = false)
     private String descripcion;
     @Column(nullable = false)
-    private String categoria;
+    @Convert(converter = CategoriaProductoConverter.class)
+    private CategoriaProducto categoria;
     @Column(nullable = false)
     private double precio;
     @Column(nullable = false)
@@ -28,13 +32,13 @@ public class Producto {
     @Column(nullable = false)
     private int fechaVencimiento;
     @Column(nullable = false)
-    private boolean stock; // Indica si el producto está en stock o no
+    private boolean stock; // Indica si el producto esta en stock o no
 
-    public Producto(){
+    public Producto() {
 
     }
 
-    public Producto(String nombre, String descripcion, String categoria, double precio, int cantidad, int cantidadMinimo, int fechaVencimiento, boolean stock) {
+    public Producto(String nombre, String descripcion, CategoriaProducto categoria, double precio, int cantidad, int cantidadMinimo, int fechaVencimiento, boolean stock) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.categoria = categoria;
@@ -57,7 +61,7 @@ public class Producto {
         return descripcion;
     }
 
-    public String getCategoria() {
+    public CategoriaProducto getCategoria() {
         return categoria;
     }
 
@@ -73,7 +77,7 @@ public class Producto {
         return cantidadMinimo;
     }
 
-    public int getfechaVencimiento() {
+    public int getFechaVencimiento() {
         return fechaVencimiento;
     }
 
@@ -89,7 +93,7 @@ public class Producto {
         this.stock = true;
     }
 
-    public void cambiarDatosProducto(String nombre, String descripcion, String categoria, double precio, int cantidad, int cantidadMinimo, int fechaVencimiento) {
+    public void cambiarDatosProducto(String nombre, String descripcion, CategoriaProducto categoria, double precio, int cantidad, int cantidadMinimo, int fechaVencimiento) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.categoria = categoria;

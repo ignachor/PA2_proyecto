@@ -3,7 +3,6 @@ package com.igna.tienda.infra.persistence.jpa;
 import java.util.List;
 import com.igna.tienda.core.repositories.ProductoRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 
 import com.igna.tienda.core.domain.Producto;
 
@@ -46,13 +45,17 @@ private final EntityManager em;
 
     @Override
     public Producto buscarPorNombre(String nombre) {
-        try {
-            return em.createQuery(
-                    "select p from Producto p where lower(p.nombre) = :nombre",
-                    Producto.class
-            ).setParameter("nombre", nombre.toLowerCase()).getSingleResult();
-        } catch (NoResultException e) {
+        if (nombre == null || nombre.isBlank()) {
             return null;
+        }
+        try {
+            List<Producto> resultados = em.createQuery(
+                    "select p from Producto p where lower(trim(p.nombre)) = :nombre order by p.id desc",
+                    Producto.class
+            ).setParameter("nombre", nombre.trim().toLowerCase())
+             .setMaxResults(1)
+             .getResultList();
+            return resultados.isEmpty() ? null : resultados.get(0);
         } catch (Exception e) {
             throw new RuntimeException("Error al buscar el producto por nombre", e);
         }

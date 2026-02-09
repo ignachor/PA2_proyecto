@@ -18,7 +18,7 @@ public class ProductoService {
         if (producto.getNombre() == null || producto.getNombre().isBlank()) {
             throw new IllegalArgumentException("Nombre de producto no proporcionado");
         }
-        if (producto.getCategoria() == null || producto.getCategoria().isBlank()) {
+        if (producto.getCategoria() == null) {
             throw new IllegalArgumentException("Categoria de producto no proporcionada");
         }
         if (producto.getDescripcion() == null || producto.getDescripcion().isBlank()) {
@@ -34,7 +34,7 @@ public class ProductoService {
             throw new IllegalArgumentException("Cantidad minima invalida");
         }
 
-        if (producto.getfechaVencimiento() < 0) {
+        if (producto.getFechaVencimiento() < 0) {
             throw new IllegalArgumentException("Fecha de Vencimiento necesaria");
         }
 
@@ -45,7 +45,7 @@ public class ProductoService {
             producto.getPrecio(),
             producto.getCantidad(),
             producto.getCantidadMinimo(),
-            producto.getfechaVencimiento(),
+            producto.getFechaVencimiento(),
             producto.getStock()
         );
 
@@ -97,7 +97,7 @@ public class ProductoService {
         } else {
             productoExistente.cambiarDatosProducto(modificarProducto.getNombre(), modificarProducto.getDescripcion(), modificarProducto.getCategoria(),
                                                 modificarProducto.getPrecio(), modificarProducto.getCantidad(), modificarProducto.getCantidadMinimo(), 
-                                                modificarProducto.getfechaVencimiento());
+                                                modificarProducto.getFechaVencimiento());
             pRepo.guardar(productoExistente);
         }
     }

@@ -147,10 +147,8 @@ public class MenuProductoAdminFrame extends JFrame {
     }
 
     private void agregarProducto() {
-        JOptionPane.showMessageDialog(this,
-                "Agregar producto (pendiente).",
-                "Producto",
-                JOptionPane.INFORMATION_MESSAGE);
+        AgregarProductoAdmin agregarFrame = new AgregarProductoAdmin(this, adminTx);
+        agregarFrame.setVisible(true);
     }
 
     private void eliminarProducto() {
@@ -184,9 +182,8 @@ public class MenuProductoAdminFrame extends JFrame {
         sb.append("Precio: ").append(p.getPrecio()).append('\n');
         sb.append("Cantidad: ").append(p.getCantidad()).append('\n');
         sb.append("Cantidad minima: ").append(p.getCantidadMinimo()).append('\n');
-        sb.append("Fecha vencimiento: ").append(p.getfechaVencimiento()).append('\n');
+        sb.append("Fecha vencimiento: ").append(p.getFechaVencimiento()).append('\n');
         sb.append("Stock: ").append(p.getStock() ? "SI" : "NO");
         return sb.toString();
     }
 }
-
