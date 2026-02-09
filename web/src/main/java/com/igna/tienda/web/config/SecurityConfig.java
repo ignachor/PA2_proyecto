@@ -49,7 +49,15 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/tiendaCliente", true)
+                .successHandler((request, response, authentication) -> {
+                    boolean esAdmin = authentication.getAuthorities().stream()
+                            .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
+                    if (esAdmin) {
+                        response.sendRedirect("/admin/menu");
+                    } else {
+                        response.sendRedirect("/tiendaCliente");
+                    }
+                })
                 .failureUrl("/login?error=true")
                 .permitAll()
             )

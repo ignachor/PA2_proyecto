@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Menu Usuario - Admin</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row mb-4">
+        <div class="col d-flex justify-content-between align-items-center">
+            <h2 class="fw-bold mb-0">Menu Usuario</h2>
+            <a class="btn btn-outline-secondary" th:href="@{/admin/menu}">Volver a Menu Admin</a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form class="row g-3" th:action="@{/admin/usuarios}" method="get">
+                <div class="col-md-9">
+                    <label class="form-label" for="busqueda">Buscar usuario (nombre/apellido/email)</label>
+                    <input id="busqueda" class="form-control" type="text" name="busqueda" th:value="${busqueda}">
+                </div>
+                <div class="col-md-3 d-flex align-items-end gap-2">
+                    <button class="btn btn-primary w-100" type="submit">Buscar</button>
+                </div>
+            </form>
+            <div class="mt-3">
+                <a class="btn btn-outline-primary" th:href="@{/admin/usuarios/lista(busqueda=${busqueda})}">Listar Usuarios</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header">Datos usuario y pedidos</div>
+                <div class="card-body" th:if="${usuarioSeleccionado != null}">
+                    <p class="mb-2"><strong>Nombre:</strong> <span th:text="${usuarioSeleccionado.nombre + ' ' + usuarioSeleccionado.apellido}">-</span></p>
+                    <p class="mb-2"><strong>Email:</strong> <span th:text="${usuarioSeleccionado.email}">-</span></p>
+                    <p class="mb-2"><strong>DNI:</strong> <span th:text="${usuarioSeleccionado.dni}">-</span></p>
+                    <p class="mb-2"><strong>Rol:</strong> <span th:text="${usuarioSeleccionado.rol}">-</span></p>
+                    <p class="mb-0"><strong>Estado:</strong> <span th:text="${usuarioSeleccionado.esActivo()} ? 'ACTIVO' : 'INACTIVO'">-</span></p>
+                </div>
+                <div class="card-body" th:if="${usuarioSeleccionado == null}">
+                    <p class="text-muted mb-0">Selecciona un usuario desde "Listar Usuarios" o buscando por nombre/apellido.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7" th:if="${usuarioSeleccionado != null}">
+            <div class="card h-100">
+                <div class="card-header">Acciones</div>
+                <div class="card-body d-flex flex-column gap-2">
+                    <form th:action="@{/admin/usuarios/activar}" method="post"
+                          onsubmit="return confirm('Seguro quieres activarlo?');">
+                        <input type="hidden" name="email" th:value="${usuarioSeleccionado.email}">
+                        <input type="hidden" name="busqueda" th:value="${busqueda}">
+                        <button class="btn btn-success w-100" type="submit">Activar Usuario</button>
+                    </form>
+
+                    <form th:action="@{/admin/usuarios/desactivar}" method="post"
+                          onsubmit="return confirm('Seguro quieres desactivarlo?');">
+                        <input type="hidden" name="email" th:value="${usuarioSeleccionado.email}">
+                        <input type="hidden" name="busqueda" th:value="${busqueda}">
+                        <button class="btn btn-danger w-100" type="submit">Desactivar Usuario</button>
+                    </form>
+
+                    <a class="btn btn-outline-primary w-100"
+                       th:href="@{/admin/usuarios(email=${usuarioSeleccionado.email},busqueda=${busqueda},verPedidos=true)}">
+                        Ver Pedidos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4" th:if="${verPedidos and usuarioSeleccionado != null}">
+        <div class="card-header">Lista de pedidos de <span th:text="${usuarioSeleccionado.nombre}">usuario</span></div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Total</th>
+                        <th>Cambiar estado</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="pedido : ${pedidosUsuario}">
+                        <td th:text="${pedido.id}">0</td>
+                        <td th:text="${#temporals.format(pedido.fechaCreacion, 'dd/MM/yyyy HH:mm')}">-</td>
+                        <td th:text="${pedido.estado}">PENDIENTE</td>
+                        <td th:text="'$' + ${#numbers.formatDecimal(pedido.total,1,2)}">$0.00</td>
+                        <td>
+                            <form class="d-flex gap-2" th:action="@{/admin/usuarios/pedidos/estado}" method="post">
+                                <input type="hidden" name="pedidoId" th:value="${pedido.id}">
+                                <input type="hidden" name="email" th:value="${usuarioSeleccionado.email}">
+                                <input type="hidden" name="busqueda" th:value="${busqueda}">
+                                <select class="form-select" name="nuevoEstado">
+                                    <option th:each="estado : ${estadosPedido}"
+                                            th:value="${estado}"
+                                            th:text="${estado}"
+                                            th:selected="${estado == pedido.estado}"></option>
+                                </select>
+                                <button class="btn btn-primary" type="submit">Guardar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${pedidosUsuario == null or #lists.isEmpty(pedidosUsuario)}">
+                        <td colspan="5" class="text-center text-muted">El usuario no tiene pedidos.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

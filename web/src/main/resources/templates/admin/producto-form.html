@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Producto Form - Admin</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0" th:text="${accion} + ' producto'">Producto</h2>
+        <a class="btn btn-outline-secondary" th:href="@{/admin/productos}">Volver</a>
+    </div>
+
+    <div class="card p-4">
+        <form th:action="${accion == 'Editar'} ? @{/admin/productos/editar} : @{/admin/productos/agregar}" method="post" th:object="${form}">
+            <input type="hidden" th:field="*{id}">
+            <div class="row g-3">
+                <div class="col-md-6"><label class="form-label">Nombre</label><input class="form-control" th:field="*{nombre}" required></div>
+                <div class="col-md-6"><label class="form-label">Categoria</label><select class="form-select" th:field="*{categoria}" required><option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"></option></select></div>
+                <div class="col-12"><label class="form-label">Descripcion</label><textarea class="form-control" th:field="*{descripcion}" rows="3" required></textarea></div>
+                <div class="col-md-3"><label class="form-label">Precio</label><input type="number" step="0.01" class="form-control" th:field="*{precio}" required></div>
+                <div class="col-md-3"><label class="form-label">Cantidad</label><input type="number" class="form-control" th:field="*{cantidad}" required></div>
+                <div class="col-md-3"><label class="form-label">Cantidad minima</label><input type="number" class="form-control" th:field="*{cantidadMinimo}" required></div>
+                <div class="col-md-3"><label class="form-label">Fecha vencimiento</label><input type="number" class="form-control" th:field="*{fechaVencimiento}" required></div>
+                <div class="col-md-3 form-check mt-4 ms-2">
+                    <input type="checkbox" class="form-check-input" id="stock" th:field="*{stock}">
+                    <label class="form-check-label" for="stock">En stock</label>
+                </div>
+            </div>
+            <button class="btn btn-primary mt-3" type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

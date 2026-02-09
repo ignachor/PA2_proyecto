@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Detalle Pedido - Admin</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">Pedido #<span th:text="${pedido.id}">0</span></h2>
+        <a class="btn btn-outline-secondary" th:href="@{/admin/pedidos}">Volver</a>
+    </div>
+
+    <div class="card mb-4 p-3">
+        <form class="d-flex gap-2 align-items-center" th:action="@{/admin/pedidos/cambiar-estado}" method="post">
+            <input type="hidden" name="pedidoId" th:value="${pedido.id}">
+            <label class="form-label mb-0">Estado</label>
+            <select class="form-select" style="max-width: 240px;" name="nuevoEstado">
+                <option th:each="e : ${estados}" th:value="${e}" th:text="${e}" th:selected="${e == pedido.estado}"></option>
+            </select>
+            <button class="btn btn-primary" type="submit">Guardar estado</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead><tr><th>Producto</th><th>Cantidad</th><th>Precio Unit.</th><th>Subtotal</th></tr></thead>
+                <tbody>
+                <tr th:each="i : ${pedido.items}">
+                    <td th:text="${i.producto.nombre}">-</td>
+                    <td th:text="${i.cantidad}">0</td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(i.precioUnitario,1,2)}">$0.00</td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(i.subtotal,1,2)}">$0.00</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

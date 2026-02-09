@@ -172,6 +172,16 @@ public class AdminServiceTx {
         }
     }
 
+    public Producto buscarProductoPorId(Long id) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            var repo = new JpaProductoRepository(em);
+            return repo.buscarPorID(id);
+        } finally {
+            em.close();
+        }
+    }
+
     //Buscar Productos por Categoria
 
     public List<Producto> buscarProductosPorCategoria(CategoriaProducto categoriaProducto)

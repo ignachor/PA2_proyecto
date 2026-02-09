@@ -104,7 +104,7 @@ public class AdminProductoController {
     @GetMapping("/editar/{id}")
     public String formularioEditar(@PathVariable Long id, Model model) {
         try {
-            Producto producto = adminService.buscarProducto(String.valueOf(id));
+            Producto producto = obtenerProductoPorId(id);
             if (producto == null) {
                 model.addAttribute("error", "Producto no encontrado");
                 return "redirect:/admin/productos";
@@ -171,7 +171,7 @@ public class AdminProductoController {
     @PostMapping("/baja/{id}")
     public String darBajaProducto(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            Producto producto = adminService.buscarProducto(String.valueOf(id));
+            Producto producto = obtenerProductoPorId(id);
             if (producto == null) {
                 redirectAttributes.addFlashAttribute("error", "Producto no encontrado");
                 return "redirect:/admin/productos";
@@ -186,5 +186,15 @@ public class AdminProductoController {
             redirectAttributes.addFlashAttribute("error", "Error al dar de baja producto: " + e.getMessage());
             return "redirect:/admin/productos";
         }
+    }
+
+    private Producto obtenerProductoPorId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return adminService.listaProductos().stream()
+                .filter(p -> id.equals(p.getId()))
+                .findFirst()
+                .orElse(null);
     }
 }
