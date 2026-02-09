@@ -105,4 +105,51 @@ public class AdminServiceTx {
 
     }
 }
+
+    //DAR DE BAJA PRODUCTO
+    public void darBajaProducto(Producto producto){
+        EntityManager em = emf.createEntityManager();
+        var tx = em.getTransaction();
+        try {
+            tx.begin();
+            var repo = new JpaProductoRepository(em);
+            var productoCore = new ProductoService(repo);
+            productoCore.BajaProducto(producto);
+            tx.commit();
+        } catch (RuntimeException e) {
+            if (tx.isActive()) tx.rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+    //MODIFICAR PRODUCTO
+    public void modificarProducto(Producto producto){
+        EntityManager em = emf.createEntityManager();
+        var tx = em.getTransaction();
+        try {
+            tx.begin();
+            var repo = new JpaProductoRepository(em);
+            var productoCore = new ProductoService(repo);
+            productoCore.ModificarProducto(producto);
+            tx.commit();
+        } catch (RuntimeException e) {
+            if (tx.isActive()) tx.rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+    //LISTAR PRODUCTOS
+
+    public List<Producto> listaProductos(){
+        EntityManager em = emf.createEntityManager();
+        try {
+            var repo = new JpaProductoRepository(em);
+            var productoCore = new ProductoService(repo);
+            return productoCore.ListarProductos();
+        } finally {
+            em.close();
+        }
+    }
 }

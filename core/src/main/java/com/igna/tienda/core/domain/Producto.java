@@ -34,13 +34,14 @@ public class Producto {
 
     }
 
-    public Producto(String nombre, String descripcion, String categoria, double precio, int cantidad, int cantidadMinimo, boolean stock) {
+    public Producto(String nombre, String descripcion, String categoria, double precio, int cantidad, int cantidadMinimo, int fechaVencimiento, boolean stock) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.precio = precio;
         this.cantidad = cantidad;
         this.cantidadMinimo = cantidadMinimo;
+        this.fechaVencimiento = fechaVencimiento;
         this.stock = stock;
     }
 
@@ -72,6 +73,10 @@ public class Producto {
         return cantidadMinimo;
     }
 
+    public int getfechaVencimiento() {
+        return fechaVencimiento;
+    }
+
     public boolean getStock() {
         return stock;
     }
@@ -82,6 +87,16 @@ public class Producto {
 
     public void hayStock() {
         this.stock = true;
+    }
+
+    public void cambiarDatosProducto(String nombre, String descripcion, String categoria, double precio, int cantidad, int cantidadMinimo, int fechaVencimiento) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.categoria = categoria;
+        this.precio = precio;
+        this.cantidad = cantidad;
+        this.cantidadMinimo = cantidadMinimo;
+        this.fechaVencimiento = fechaVencimiento;
     }
 
 }
