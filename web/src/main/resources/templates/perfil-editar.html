@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Editar Perfil - Tienda Online</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-pencil-square"></i> Editar Perfil</h2>
+            <p class="text-muted mb-0">Actualiza tu informacion y guarda cambios.</p>
+        </div>
+        <a th:href="@{/perfil}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left"></i> Volver a Mi Perfil
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">Datos personales</div>
+                <div class="card-body">
+                    <form th:action="@{/perfil/datos}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label" for="nombre">Nombre</label>
+                            <input id="nombre" name="nombre" class="form-control" type="text"
+                                   th:value="${usuario != null ? usuario.nombre : ''}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="apellido">Apellido</label>
+                            <input id="apellido" name="apellido" class="form-control" type="text"
+                                   th:value="${usuario != null ? usuario.apellido : ''}" required>
+                        </div>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-save"></i> Guardar datos personales
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">Email</div>
+                <div class="card-body">
+                    <form th:action="@{/perfil/email}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label" for="nuevoEmail">Nuevo email</label>
+                            <input id="nuevoEmail" name="nuevoEmail" class="form-control" type="email"
+                                   th:value="${usuario != null ? usuario.email : ''}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="password">Password actual</label>
+                            <input id="password" name="password" class="form-control" type="password" required>
+                        </div>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-envelope-check"></i> Actualizar email
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">Direccion</div>
+                <div class="card-body">
+                    <form th:action="@{/perfil/direccion}" method="post">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label" for="calle">Calle</label>
+                                <input id="calle" name="calle" class="form-control" type="text"
+                                       th:value="${usuario != null and usuario.direccion != null ? usuario.direccion.calle : ''}" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label" for="numero">Numero</label>
+                                <input id="numero" name="numero" class="form-control" type="text"
+                                       th:value="${usuario != null and usuario.direccion != null ? usuario.direccion.numero : ''}" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for="ciudad">Ciudad</label>
+                                <input id="ciudad" name="ciudad" class="form-control" type="text"
+                                       th:value="${usuario != null and usuario.direccion != null ? usuario.direccion.ciudad : ''}" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for="provincia">Provincia</label>
+                                <input id="provincia" name="provincia" class="form-control" type="text"
+                                       th:value="${usuario != null and usuario.direccion != null ? usuario.direccion.provincia : ''}" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for="codigoPostal">Codigo postal</label>
+                                <input id="codigoPostal" name="codigoPostal" class="form-control" type="text"
+                                       th:value="${usuario != null and usuario.direccion != null ? usuario.direccion.codigoPostal : ''}" required>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary mt-3" type="submit">
+                            <i class="bi bi-geo-alt"></i> Guardar direccion
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Detalle del Pedido - Tienda Online</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Implementacion: encabezado y acciones de navegacion -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="bi bi-receipt"></i> Pedido #<span th:text="${pedido.id}">0</span></h2>
+        <a th:href="@{/pedidos}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left"></i> Volver a pedidos
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Implementacion: resumen del pedido -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">Resumen</div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Fecha:</strong> <span th:text="${#temporals.format(pedido.fechaCreacion, 'dd/MM/yyyy HH:mm')}">-</span></p>
+                    <p class="mb-2"><strong>Estado:</strong> <span th:text="${pedido.estado}">PENDIENTE</span></p>
+                    <p class="mb-2"><strong>Items:</strong> <span th:text="${pedido.items.size()}">0</span></p>
+                    <hr>
+                    <p class="mb-0"><strong>Total:</strong> <span class="text-primary" th:text="'$' + ${#numbers.formatDecimal(pedido.total, 1, 2)}">$0.00</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementacion: detalle de productos del pedido -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">Productos</div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th class="text-center">Cantidad</th>
+                                <th class="text-end">Precio unitario</th>
+                                <th class="text-end">Subtotal</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${pedido.items}">
+                                <td>
+                                    <strong th:text="${item.producto.nombre}">Producto</strong>
+                                    <div class="small text-muted" th:text="${item.producto.categoria}">Categoria</div>
+                                </td>
+                                <td class="text-center" th:text="${item.cantidad}">1</td>
+                                <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(item.precioUnitario, 1, 2)}">$0.00</td>
+                                <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(item.subtotal, 1, 2)}">$0.00</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

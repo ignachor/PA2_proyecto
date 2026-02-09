@@ -9,15 +9,10 @@
 <body>
     <div layout:fragment="content" class="tienda-cliente">
         <div class="row mb-3 tienda-header">
-            <div class="col-12 col-md-6">
+            <div class="col-12">
                 <h2 class="fw-bold mb-0">
                     <i class="bi bi-shop"></i> Tienda
                 </h2>
-            </div>
-            <div class="col-12 col-md-6 d-flex justify-content-md-end mt-3 mt-md-0">
-                <a th:href="@{/perfil}" class="btn btn-outline-primary">
-                    <i class="bi bi-pencil-square"></i> Editar Perfil
-                </a>
             </div>
         </div>
 
@@ -111,12 +106,6 @@
         <div class="tienda-acciones mt-4 d-flex flex-wrap gap-2 justify-content-between">
             <a href="#lista-productos" class="btn btn-primary">
                 <i class="bi bi-cart-plus"></i> Agregar Producto al Carrito
-            </a>
-            <a th:href="@{/carrito}" class="btn btn-outline-primary">
-                <i class="bi bi-cart3"></i> Ver Carrito
-            </a>
-            <a th:href="@{/pedidos}" class="btn btn-outline-secondary">
-                <i class="bi bi-box-seam"></i> Ver Pedidos
             </a>
         </div>
     </div>

@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Mi Perfil - Tienda Online</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-person"></i> Mi Perfil</h2>
+            <p class="text-muted mb-0">Vista de datos del usuario.</p>
+        </div>
+        <a th:href="@{/perfil/editar}" class="btn btn-primary">
+            <i class="bi bi-pencil-square"></i> Editar perfil
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">Datos personales</div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Nombre:</strong> <span th:text="${usuario != null ? usuario.nombre : '-'}">-</span></p>
+                    <p class="mb-2"><strong>Apellido:</strong> <span th:text="${usuario != null ? usuario.apellido : '-'}">-</span></p>
+                    <p class="mb-0"><strong>DNI:</strong> <span th:text="${usuario != null ? usuario.dni : '-'}">-</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">Cuenta</div>
+                <div class="card-body">
+                    <p class="mb-0"><strong>Email:</strong> <span th:text="${usuario != null ? usuario.email : '-'}">-</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">Direccion</div>
+                <div class="card-body" th:if="${usuario != null and usuario.direccion != null}">
+                    <p class="mb-2"><strong>Calle:</strong> <span th:text="${usuario.direccion.calle}">-</span></p>
+                    <p class="mb-2"><strong>Numero:</strong> <span th:text="${usuario.direccion.numero}">-</span></p>
+                    <p class="mb-2"><strong>Ciudad:</strong> <span th:text="${usuario.direccion.ciudad}">-</span></p>
+                    <p class="mb-2"><strong>Provincia:</strong> <span th:text="${usuario.direccion.provincia}">-</span></p>
+                    <p class="mb-0"><strong>Codigo postal:</strong> <span th:text="${usuario.direccion.codigoPostal}">-</span></p>
+                </div>
+                <div class="card-body" th:if="${usuario == null or usuario.direccion == null}">
+                    <p class="text-muted mb-0">Sin direccion registrada.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
