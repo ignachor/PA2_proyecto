@@ -20,6 +20,17 @@ private final EntityManager em;
                 return null;
             }
     };
+
+    @Override
+    public Producto buscarPorNombre(String nombre) {
+        try {
+            return em.find(Producto.class, nombre);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
     @Override
     public Producto guardar(Producto producto) {
 

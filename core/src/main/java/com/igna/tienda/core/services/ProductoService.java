@@ -2,6 +2,7 @@ package com.igna.tienda.core.services;
 
 import com.igna.tienda.core.domain.Producto;
 import com.igna.tienda.core.repositories.ProductoRepository;
+import java.util.List;
 public class ProductoService {
     private ProductoRepository pRepo;
     public ProductoService(ProductoRepository pRepo) {
@@ -33,6 +34,10 @@ public class ProductoService {
             throw new IllegalArgumentException("Cantidad minima invalida");
         }
 
+        if (producto.getfechaVencimiento() < 0) {
+            throw new IllegalArgumentException("Fecha de Vencimiento necesaria");
+        }
+
         Producto productoDarDeAlta = new Producto(
             producto.getNombre(),
             producto.getDescripcion(),
@@ -40,15 +45,20 @@ public class ProductoService {
             producto.getPrecio(),
             producto.getCantidad(),
             producto.getCantidadMinimo(),
+            producto.getfechaVencimiento(),
             producto.getStock()
         );
-        if (productoDarDeAlta.getCantidad() > 0) {
+
+        if (productoDarDeAlta.getCantidad() > 0) 
+        {
             productoDarDeAlta.hayStock();
-        } else {
+        } 
+        else 
+        {
             productoDarDeAlta.noHayStock();
         }
 
-        pRepo.guardar(productoDarDeAlta);
+        pRepo.guardar(productoDarDeAlta);    
     }
 
     //CU-14: Dar de baja producto
@@ -66,23 +76,47 @@ public class ProductoService {
       
     }
 
-    public void ModificarProducto(Producto producto){
-        if (producto == null) {
+
+    //CU-13: Modificar Producto
+    public void ModificarProducto(Producto modificarProducto){
+        if (modificarProducto == null) {
             throw new IllegalArgumentException("Producto no proporcionado");
-        }   
-        //TODO: Implementar el método para modificar los datos de un producto
+        } 
+        if (modificarProducto.getNombre() == null) {
+            throw new IllegalArgumentException("Nombre de producto obligatorio");
+        }
+
+        Producto productoExistente = pRepo.buscarPorID(modificarProducto.getId());
+
+        if(productoExistente == null) {
+            throw new IllegalArgumentException("Producto no encontrado");
+        }
+
+        if ((modificarProducto.getNombre() == null) || (modificarProducto.getNombre().isEmpty()) || (modificarProducto.getNombre().isBlank())){
+            throw new IllegalArgumentException("Nombre no proporcionado, es un dato obligatorio");
+        } else {
+            productoExistente.cambiarDatosProducto(modificarProducto.getNombre(), modificarProducto.getDescripcion(), modificarProducto.getCategoria(),
+                                                modificarProducto.getPrecio(), modificarProducto.getCantidad(), modificarProducto.getCantidadMinimo(), 
+                                                modificarProducto.getfechaVencimiento());
+            pRepo.guardar(productoExistente);
+        }
     }
 
-    public void ListarProductos(Producto producto){
-        if (producto == null) {
-            throw new IllegalArgumentException("Producto no proporcionado");
-        }   
-        //TODO: Implementar el método para listar todos los productos
-    }
 
-    public void BuscarProducto(Producto producto){
-        if (producto == null) {
-            throw new IllegalArgumentException("Producto no proporcionado"); }
-        //TODO: Implementar el método para buscar un producto por su nombre o ID
+    //CU- : Listar Productos
+    public List<Producto> ListarProductos(){
+        return pRepo.listarProductos();
+        }   
+
+
+
+    //CU- : Buscar Productos
+    public Producto BuscarProducto(String nombre){
+        Producto buscarProducto = pRepo.buscarPorNombre(nombre);
+        if(buscarProducto != null)
+        {
+            return buscarProducto;
+        }
+        return null;
     }
 }
