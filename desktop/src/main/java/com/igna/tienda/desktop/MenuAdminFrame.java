@@ -46,7 +46,7 @@ public class MenuAdminFrame extends JFrame {
         header.setPreferredSize(new Dimension(700, 100));
         header.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
         
-        JLabel titleLabel = new JLabel("⚙️ PANEL DE ADMINISTRACIÓN");
+        JLabel titleLabel = new JLabel(" PANEL DE ADMINISTRACIÓN");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         titleLabel.setForeground(Color.WHITE);
         
@@ -75,9 +75,9 @@ public class MenuAdminFrame extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Card de Usuarios
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         JPanel usuariosCard = createActionCard(
-            "👥 Gestión de Usuarios",
+            " Gestión de Usuarios",
             "Administra usuarios, activa/desactiva cuentas y visualiza información"
         );
         centerPanel.add(usuariosCard, gbc);
@@ -94,7 +94,7 @@ public class MenuAdminFrame extends JFrame {
         gbc.gridy = 2;
         gbc.insets = new Insets(30, 0, 15, 0);
         JPanel productosCard = createActionCard(
-            "📦 Gestión de Productos",
+            " Gestión de Productos",
             "Administra el catálogo de productos (próximamente)"
         );
         centerPanel.add(productosCard, gbc);
@@ -114,7 +114,7 @@ public class MenuAdminFrame extends JFrame {
         footer.setBackground(ModernTheme.BG_SECONDARY);
         footer.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(189, 195, 199)));
         
-        salirBtn = ModernTheme.createSecondaryButton("🚪 CERRAR SESIÓN");
+        salirBtn = ModernTheme.createSecondaryButton("CERRAR SESIÓN");
         footer.add(salirBtn);
 
         root.add(header, BorderLayout.NORTH);
