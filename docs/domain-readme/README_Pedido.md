@@ -69,7 +69,4 @@
 5. `JpaPedidoRepository.guardar(...)` persiste.
 6. Commit y refresh de pantalla.
 
-## Extension recomendada
 
-- Agregar reglas de transicion validas de estado (ejemplo: no volver de ENTREGADO a PENDIENTE).
-- Registrar historial de estados en tabla separada para auditoria.

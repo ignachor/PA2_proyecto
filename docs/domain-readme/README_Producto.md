@@ -84,8 +84,3 @@ Metodos de dominio:
 4. `JpaProductoRepository.guardar(...)` inserta/actualiza.
 5. Commit de transaccion.
 
-## Extension recomendada
-
-- Migrar `fechaVencimiento` a tipo fecha real (`LocalDate`).
-- Reemplazar `double` por `BigDecimal` para precision monetaria.
-- Agregar regla de transicion de stock separando "activo" de "cantidad disponible".

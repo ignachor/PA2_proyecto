@@ -83,8 +83,3 @@ Metodos clave de dominio:
 4. `JpaUsuarioRepository.guardar(...)` persiste cambios.
 5. Se confirma transaccion y retorna usuario actualizado.
 
-## Extension recomendada
-
-- Mover hash de password fuera de `AuthService` a un componente dedicado.
-- Agregar DTOs de entrada para no pasar entidad completa desde UI.
-- Evitar recrear `Usuario` en activacion/desactivacion y operar sobre entidad gestionada.

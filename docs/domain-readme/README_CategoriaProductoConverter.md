@@ -54,8 +54,3 @@ Impacta todos los flujos transaccionales que guardan o leen `Producto`:
 2. JPA obtiene valor crudo de `categoria`.
 3. Converter normaliza y mapea al enum.
 4. Service recibe entidad consistente para reglas de negocio.
-
-## Extension recomendada
-
-- Mantener este converter como punto unico de compatibilidad historica.
-- Documentar cada alias nuevo en migraciones SQL y en este README.

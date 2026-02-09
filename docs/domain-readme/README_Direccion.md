@@ -44,7 +44,4 @@ No existe `DireccionServiceTx`.
 3. `UsuarioServiceTx.editarDireccion(...)` valida datos y persiste usuario.
 4. JPA actualiza columnas embebidas en tabla `usuario`.
 
-## Extension recomendada
 
-- Agregar validadores por pais/provincia para formato de codigo postal.
-- Considerar tabla separada si se necesita historial de domicilios.

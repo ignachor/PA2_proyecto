@@ -41,7 +41,4 @@ Se persiste como campo de `Pedido` usando `PedidoRepository`.
 4. Repository guarda pedido actualizado.
 5. UI refresca tabla con nuevo estado.
 
-## Extension recomendada
 
-- Definir matriz de transiciones permitidas para bloquear cambios invalidos.
-- Agregar timestamp por transicion para auditoria.

@@ -51,7 +51,3 @@ La capa transaccional relevante es:
 3. `Pedido` se persiste con `pedidoRepo.guardar(...)`.
 4. Queda trazabilidad de precio historico por item.
 
-## Extension recomendada
-
-- Agregar descuentos/impuestos por linea si el dominio lo requiere.
-- Guardar nombre y categoria como snapshot adicional para reportes historicos.

@@ -47,7 +47,3 @@ Se usa indirectamente desde:
 3. Se evalua `usuario.getRol()`.
 4. UI decide abrir menu de cliente o menu de admin.
 
-## Extension recomendada
-
-- Si aparecen permisos granulares, migrar a modelo `Role + Permission`.
-- Mantener `Rol` como nivel alto para routing de UI.

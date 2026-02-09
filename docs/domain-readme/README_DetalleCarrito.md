@@ -50,7 +50,3 @@ Las operaciones transaccionales se exponen en `CarritoServiceTx`.
 3. `Carrito.anadirProducto(...)` fusiona o agrega item.
 4. `JpaCarritoRepository.guardar(...)` persiste la coleccion.
 
-## Extension recomendada
-
-- Guardar snapshot de precio unitario en carrito si se necesita congelar precio antes de pagar.
-- Agregar validacion de stock maximo por item directamente en entidad si se quiere reforzar invariante.

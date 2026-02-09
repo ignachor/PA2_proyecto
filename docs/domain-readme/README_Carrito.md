@@ -66,9 +66,3 @@ En todos los casos arma repos (`JpaCarritoRepository`, `JpaPedidoRepository`, `J
 4. `Carrito.anadirProducto(...)` aplica merge de linea por producto.
 5. `JpaCarritoRepository.guardar(...)` persiste.
 6. Commit de transaccion.
-
-## Extension recomendada
-
-- Manejar concurrencia optimista para evitar sobreventa en alta carga.
-- Extraer politicas de stock a un servicio de inventario.
-- Agregar eventos de dominio para auditoria de cambios en carrito.

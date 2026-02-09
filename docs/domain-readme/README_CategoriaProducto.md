@@ -47,10 +47,3 @@ Tambien se usa en `AdminServiceTx` y `ProductoServiceTx` para filtrar catalogo.
 2. Se pasa enum `CategoriaProducto` al ServiceTx.
 3. Service core delega en repository.
 4. Jpa query retorna productos de esa categoria.
-
-## Extension recomendada
-
-- Si se agregan categorias nuevas, actualizar:
-  - enum
-  - combos de UI
-  - mapeo legacy del converter
