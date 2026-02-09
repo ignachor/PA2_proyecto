@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Carrito - Tienda Online</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row mb-4">
+            <div class="col">
+                <h2 class="fw-bold">
+                    <i class="bi bi-cart3"></i> Mi Carrito de Compras
+                </h2>
+            </div>
+        </div>
+        
+        <!-- Si el carrito tiene items -->
+        <div th:if="${carrito != null and !carrito.items.isEmpty()}">
+            <!-- Items del Carrito -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div th:each="item : ${carrito.items}" class="carrito-item">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="mb-1" th:text="${item.producto.nombre}">Producto</h5>
+                                <p class="text-muted mb-0" th:text="${item.producto.categoria}">
+                                    Categoría
+                                </p>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <strong th:text="'$' + ${#numbers.formatDecimal(item.producto.precio, 1, 2)}">
+                                    $0.00
+                                </strong>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <!-- Formulario para modificar cantidad -->
+                                <form th:action="@{/carrito/modificar}" method="post" 
+                                      class="d-inline">
+                                    <input type="hidden" name="productoId" 
+                                           th:value="${item.producto.id}">
+                                    
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" class="form-control" 
+                                               name="cantidad" 
+                                               th:value="${item.cantidad}"
+                                               min="1" 
+                                               th:max="${item.producto.cantidad}"
+                                               onchange="this.form.submit()">
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <!-- Botón Eliminar -->
+                                <form th:action="@{/carrito/eliminar}" method="post" 
+                                      class="d-inline">
+                                    <input type="hidden" name="productoId" 
+                                           th:value="${item.producto.id}">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-2">
+                            <div class="col text-end">
+                                <strong>Subtotal: </strong>
+                                <span th:text="'$' + ${#numbers.formatDecimal(item.subtotal, 1, 2)}">
+                                    $0.00
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resumen del Pedido -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Resumen del Pedido</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Items:</span>
+                                <strong th:text="${carrito.items.size()}">0</strong>
+                            </div>
+                            
+                            <hr>
+                            
+                            <div class="d-flex justify-content-between mb-3">
+                                <h5 class="mb-0">TOTAL:</h5>
+                                <h5 class="mb-0 text-primary" 
+                                    th:text="'$' + ${#numbers.formatDecimal(total, 1, 2)}">
+                                    $0.00
+                                </h5>
+                            </div>
+                            
+                            <!-- Botón Finalizar Compra -->
+                            <form th:action="@{/carrito/finalizar}" method="post">
+                                <button type="submit" class="btn btn-success w-100 mb-2">
+                                    <i class="bi bi-check-circle"></i> Finalizar Compra
+                                </button>
+                            </form>
+                            
+                            <a th:href="@{/catalogo}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-arrow-left"></i> Seguir Comprando
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Si el carrito está vacío -->
+        <div th:if="${carrito == null or carrito.items.isEmpty()}" 
+             class="text-center py-5">
+            <i class="bi bi-cart-x display-1 text-muted"></i>
+            <h3 class="mt-4">Tu carrito está vacío</h3>
+            <p class="text-muted">Agrega productos desde el catálogo</p>
+            <a th:href="@{/catalogo}" class="btn btn-primary btn-lg mt-3">
+                <i class="bi bi-grid"></i> Ir al Catálogo
+            </a>
+        </div>
+    </div>
+</body>
+</html>
