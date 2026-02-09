@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Tienda Online</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="bg-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-3 fw-bold mb-4">
+                        Bienvenido a Tienda Online
+                    </h1>
+                    <p class="lead mb-4">
+                        Encuentra los mejores productos al mejor precio. 
+                        Compra fácil, rápido y seguro.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a th:href="@{/login}" class="btn btn-light btn-lg">
+                            <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                        </a>
+                        <a th:href="@{/registro}" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-person-plus"></i> Registrarse
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <i class="bi bi-shop display-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="container py-5">
+        <h2 class="text-center fw-bold mb-5">¿Por qué elegir Tienda Online?</h2>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-truck display-4 text-primary mb-3"></i>
+                        <h5 class="card-title">Envío Rápido</h5>
+                        <p class="card-text">
+                            Recibí tus productos en tiempo récord. 
+                            Entrega a todo el país.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-shield-check display-4 text-primary mb-3"></i>
+                        <h5 class="card-title">Compra Segura</h5>
+                        <p class="card-text">
+                            Todas tus transacciones están protegidas 
+                            con los mejores estándares de seguridad.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-award display-4 text-primary mb-3"></i>
+                        <h5 class="card-title">Calidad Garantizada</h5>
+                        <p class="card-text">
+                            Productos seleccionados con los más altos 
+                            estándares de calidad.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CTA Section -->
+    <div class="bg-primary-light py-5">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-4">¿Listo para empezar?</h2>
+            <p class="lead mb-4">
+                Regístrate ahora y comienza a disfrutar de nuestros productos.
+            </p>
+            <a th:href="@{/registro}" class="btn btn-primary btn-lg">
+                <i class="bi bi-person-plus"></i> Crear Cuenta Gratis
+            </a>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-white py-4 mt-5">
+        <div class="container text-center text-muted">
+            <p class="mb-0">© 2026 Tienda Online - Proyecto Universitario</p>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

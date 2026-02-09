@@ -1,0 +1,329 @@
+/* ===================================================================
+   TIENDA WEB - ESTILOS PERSONALIZADOS
+   Paleta: Celeste y Blanco
+   =================================================================== */
+
+:root {
+    /* Colores Principales */
+    --primary: #0ea5e9;          /* Celeste vibrante */
+    --primary-dark: #0284c7;     /* Celeste oscuro */
+    --primary-light: #38bdf8;    /* Celeste claro */
+    --secondary: #06b6d4;        /* Cyan */
+    
+    /* Fondos */
+    --bg-white: #ffffff;
+    --bg-light: #f0f9ff;         /* Celeste muy claro */
+    --bg-card: #e0f2fe;          /* Celeste suave */
+    
+    /* Textos */
+    --text-dark: #0c4a6e;        /* Azul oscuro */
+    --text-gray: #64748b;        /* Gris */
+    
+    /* Estados */
+    --success: #10b981;          /* Verde */
+    --danger: #ef4444;           /* Rojo */
+    --warning: #f59e0b;          /* Naranja */
+    
+    /* Sombras */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+/* ===================================================================
+   GENERAL
+   =================================================================== */
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+/* ===================================================================
+   NAVBAR
+   =================================================================== */
+
+.navbar {
+    background-color: var(--primary) !important;
+    box-shadow: var(--shadow-md);
+}
+
+.navbar-brand {
+    color: white !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: white !important;
+    background-color: var(--primary-dark);
+    border-radius: 0.375rem;
+}
+
+.nav-link.active {
+    background-color: var(--primary-dark);
+    border-radius: 0.375rem;
+}
+
+/* ===================================================================
+   BOTONES
+   =================================================================== */
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.btn-secondary {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+}
+
+.btn-secondary:hover {
+    background-color: #0891b2;
+    border-color: #0891b2;
+}
+
+.btn-success {
+    background-color: var(--success);
+    border-color: var(--success);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    border-color: var(--danger);
+}
+
+/* ===================================================================
+   CARDS
+   =================================================================== */
+
+.card {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-md);
+    background-color: var(--bg-white);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+    background-color: var(--primary);
+    color: white;
+    font-weight: 600;
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+}
+
+.card-footer {
+    background-color: var(--bg-card);
+    border-radius: 0 0 0.75rem 0.75rem !important;
+}
+
+/* ===================================================================
+   PRODUCTOS
+   =================================================================== */
+
+.producto-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.producto-card .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.producto-card .btn-group {
+    margin-top: auto;
+}
+
+.producto-precio {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.producto-stock {
+    font-size: 0.875rem;
+    color: var(--text-gray);
+}
+
+.producto-stock.sin-stock {
+    color: var(--danger);
+    font-weight: 600;
+}
+
+/* ===================================================================
+   CARRITO
+   =================================================================== */
+
+.carrito-total {
+    background-color: var(--bg-card);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.carrito-item {
+    background-color: var(--bg-white);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: var(--shadow-sm);
+}
+
+/* ===================================================================
+   TABLAS
+   =================================================================== */
+
+.table {
+    background-color: var(--bg-white);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: var(--primary);
+    color: white;
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--bg-card);
+}
+
+/* ===================================================================
+   BADGES
+   =================================================================== */
+
+.badge-pendiente {
+    background-color: var(--warning);
+}
+
+.badge-confirmado {
+    background-color: var(--primary);
+}
+
+.badge-enviado {
+    background-color: var(--secondary);
+}
+
+.badge-entregado {
+    background-color: var(--success);
+}
+
+.badge-cancelado {
+    background-color: var(--danger);
+}
+
+/* ===================================================================
+   ALERTS
+   =================================================================== */
+
+.alert {
+    border-radius: 0.75rem;
+    border: none;
+}
+
+.alert-success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.alert-danger {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.alert-info {
+    background-color: var(--bg-card);
+    color: var(--text-dark);
+}
+
+/* ===================================================================
+   FORMS
+   =================================================================== */
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.25);
+}
+
+.form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.25);
+}
+
+/* ===================================================================
+   PÁGINA DE LOGIN/REGISTRO
+   =================================================================== */
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+}
+
+.auth-card {
+    max-width: 450px;
+    width: 100%;
+    padding: 2rem;
+}
+
+/* ===================================================================
+   UTILIDADES
+   =================================================================== */
+
+.text-primary-custom {
+    color: var(--primary) !important;
+}
+
+.bg-primary-light {
+    background-color: var(--bg-card) !important;
+}
+
+.border-primary-custom {
+    border-color: var(--primary) !important;
+}
+
+/* ===================================================================
+   RESPONSIVE
+   =================================================================== */
+
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+    
+    .producto-card {
+        margin-bottom: 1rem;
+    }
+    
+    .table {
+        font-size: 0.875rem;
+    }
+}
