@@ -152,4 +152,17 @@ public class AdminServiceTx {
             em.close();
         }
     }
+
+        //LISTAR PRODUCTOS
+
+    public Producto buscarProducto(String nombreBuscar){
+        EntityManager em = emf.createEntityManager();
+        try {
+            var repo = new JpaProductoRepository(em);
+            var productoCore = new ProductoService(repo);
+            return productoCore.BuscarProducto(nombreBuscar);
+        } finally {
+            em.close();
+        }
+    }
 }

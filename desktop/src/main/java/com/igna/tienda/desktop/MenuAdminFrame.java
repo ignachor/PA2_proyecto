@@ -103,7 +103,7 @@ public class MenuAdminFrame extends JFrame {
         gbc.insets = new Insets(15, 0, 15, 0);
         productosBtn = ModernTheme.createSecondaryButton("ABRIR GESTIÓN DE PRODUCTOS");
         productosBtn.setPreferredSize(new Dimension(400, 45));
-        productosBtn.setEnabled(false);
+        productosBtn.setEnabled(true);
         JPanel btnPanel2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnPanel2.setBackground(ModernTheme.BG_PRIMARY);
         btnPanel2.add(productosBtn);
@@ -165,10 +165,8 @@ public class MenuAdminFrame extends JFrame {
     }
 
     private void openProductos() {
-        JOptionPane.showMessageDialog(this,
-                "La gestión de productos estará disponible próximamente",
-                "Función en desarrollo",
-                JOptionPane.INFORMATION_MESSAGE);
+        MenuProductoAdminFrame menuProductos = new MenuProductoAdminFrame(authTx, usuarioTx, adminTx, adminActual);
+        menuProductos.setVisible(true);
     }
 
     private void doLogout() {
@@ -184,3 +182,4 @@ public class MenuAdminFrame extends JFrame {
         }
     }
 }
+
