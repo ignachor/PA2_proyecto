@@ -113,7 +113,7 @@ public class MenuProductoAdminFrame extends JFrame {
         // MODIFICACION: al cambiar categoria se ejecuta la busqueda por categoria.
         categoriaCombo.addActionListener(e -> filtrarPorCategoria());
         agregarBtn.addActionListener(e -> agregarProducto());
-        eliminarBtn.addActionListener(e -> eliminarProducto());
+        eliminarBtn.addActionListener(e -> darDeBajaProducto());
         modificarBtn.addActionListener(e -> modificarProducto());
         listarBtn.addActionListener(e -> listarProductos());
     }
@@ -172,18 +172,79 @@ public class MenuProductoAdminFrame extends JFrame {
         agregarFrame.setVisible(true);
     }
 
-    private void eliminarProducto() {
-        JOptionPane.showMessageDialog(this,
-                "Eliminar producto (pendiente).",
-                "Producto",
-                JOptionPane.INFORMATION_MESSAGE);
+    private void darDeBajaProducto() {
+        String nombreProducto = buscarField.getText();
+        if (nombreProducto == null || nombreProducto.isBlank()) {
+            JOptionPane.showMessageDialog(this,
+                    "Ingresa el nombre del producto a dar de baja.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            Producto producto = adminTx.buscarProducto(nombreProducto.trim());
+            if (producto == null) {
+                detalleArea.setText("Producto no encontrado: " + nombreProducto.trim());
+                return;
+            }
+
+            // Confirmacion de baja, similar al diseno solicitado (Si / No).
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Seguro quiere darlo de baja?",
+                    "Confirmar baja",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+            if (confirm != JOptionPane.YES_OPTION) {
+                return;
+            }
+
+            // Ejecuta el CU de baja: el producto queda con stock=false.
+            adminTx.darBajaProducto(producto);
+            detalleArea.setText(renderProducto(producto));
+
+            JOptionPane.showMessageDialog(this,
+                    "Producto dado de baja correctamente.",
+                    "Producto",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this,
+                    ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void modificarProducto() {
-        JOptionPane.showMessageDialog(this,
-                "Modificar producto (pendiente).",
-                "Producto",
-                JOptionPane.INFORMATION_MESSAGE);
+        String nombreProducto = buscarField.getText();
+        if (nombreProducto == null || nombreProducto.isBlank()) {
+            JOptionPane.showMessageDialog(this,
+                    "Ingresa el nombre del producto a modificar.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            Producto producto = adminTx.buscarProducto(nombreProducto.trim());
+            if (producto == null) {
+                detalleArea.setText("Producto no encontrado: " + nombreProducto.trim());
+                return;
+            }
+
+            // IMPLEMENTACION: abre ventana de edicion con datos del producto actual.
+            ModificarProductoAdmin modificarFrame = new ModificarProductoAdmin(this, adminTx, producto, productoActualizado -> {
+                // MODIFICACION: actualiza la vista de detalle tras guardar.
+                detalleArea.setText(renderProducto(productoActualizado));
+                buscarField.setText(productoActualizado.getNombre());
+            });
+            modificarFrame.setVisible(true);
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this,
+                    ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void listarProductos() {

@@ -1,9 +1,12 @@
 package com.igna.tienda.desktop;
 
 import com.igna.tienda.core.domain.Usuario;
-import com.igna.tienda.infra.services.AuthServiceTx;
-import com.igna.tienda.infra.services.UsuarioServiceTx;
 import com.igna.tienda.infra.services.AdminServiceTx;
+import com.igna.tienda.infra.services.AuthServiceTx;
+import com.igna.tienda.infra.services.CarritoServiceTx;
+import com.igna.tienda.infra.services.PedidoServiceTx;
+import com.igna.tienda.infra.services.ProductoServiceTx;
+import com.igna.tienda.infra.services.UsuarioServiceTx;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +15,9 @@ public class MenuAdminFrame extends JFrame {
     private final AuthServiceTx authTx;
     private final UsuarioServiceTx usuarioTx;
     private final AdminServiceTx adminTx;
+    private final ProductoServiceTx productoTx;
+    private final CarritoServiceTx carritoTx;
+    private final PedidoServiceTx pedidoTx;
     private Usuario adminActual;
 
     private JLabel bienvenidaLabel;
@@ -19,17 +25,30 @@ public class MenuAdminFrame extends JFrame {
     private JButton productosBtn;
     private JButton salirBtn;
 
-    public MenuAdminFrame(AuthServiceTx authTx, UsuarioServiceTx usuarioTx, AdminServiceTx adminTx, Usuario adminActual) {
-        super("Panel de Administración");
+    public MenuAdminFrame(
+            AuthServiceTx authTx,
+            UsuarioServiceTx usuarioTx,
+            AdminServiceTx adminTx,
+            ProductoServiceTx productoTx,
+            CarritoServiceTx carritoTx,
+            PedidoServiceTx pedidoTx,
+            Usuario adminActual
+    ) {
+        super("Panel de Administracion");
         this.authTx = authTx;
         this.usuarioTx = usuarioTx;
         this.adminTx = adminTx;
+        this.productoTx = productoTx;
+        this.carritoTx = carritoTx;
+        this.pedidoTx = pedidoTx;
         this.adminActual = adminActual;
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setMinimumSize(new Dimension(700, 500));
+        // Paso 0: aumenta el alto util para evitar recortes de tarjetas en pantallas con escalado.
+        setMinimumSize(new Dimension(840, 620));
+        setSize(new Dimension(900, 680));
         setLocationRelativeTo(null);
-        setResizable(false);
+        setResizable(true);
 
         setContentPane(buildContent());
         wireEvents();
@@ -37,84 +56,62 @@ public class MenuAdminFrame extends JFrame {
     }
 
     private JPanel buildContent() {
-        JPanel root = new JPanel(new BorderLayout());
+        // Paso 1: layout principal en tres zonas claras (header / contenido / footer).
+        JPanel root = new JPanel(new BorderLayout(0, 12));
         root.setBackground(ModernTheme.BG_PRIMARY);
+        root.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 
-        // Header
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(ModernTheme.PRIMARY_DARK);
-        header.setPreferredSize(new Dimension(700, 100));
-        header.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
-        
-        JLabel titleLabel = new JLabel(" PANEL DE ADMINISTRACIÓN");
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        header.setPreferredSize(new Dimension(700, 110));
+        header.setBorder(BorderFactory.createEmptyBorder(18, 24, 18, 24));
+
+        JLabel titleLabel = new JLabel("PANEL DE ADMINISTRACION");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 26));
         titleLabel.setForeground(Color.WHITE);
-        
+
         bienvenidaLabel = new JLabel();
         bienvenidaLabel.setFont(ModernTheme.FONT_BODY);
         bienvenidaLabel.setForeground(new Color(236, 240, 241));
-        
+
         JPanel headerContent = new JPanel();
         headerContent.setLayout(new BoxLayout(headerContent, BoxLayout.Y_AXIS));
         headerContent.setBackground(ModernTheme.PRIMARY_DARK);
         headerContent.add(titleLabel);
         headerContent.add(Box.createVerticalStrut(8));
         headerContent.add(bienvenidaLabel);
-        
+
         header.add(headerContent, BorderLayout.WEST);
 
-        // Panel central con opciones
-        JPanel centerPanel = new JPanel();
+        // Paso 2: contenido central en 2 filas estables para mostrar siempre ambos modulos.
+        JPanel centerPanel = new JPanel(new GridLayout(2, 1, 0, 14));
         centerPanel.setBackground(ModernTheme.BG_PRIMARY);
-        centerPanel.setLayout(new GridBagLayout());
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
-        
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.insets = new Insets(15, 0, 15, 0);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(8, 24, 8, 24));
 
-        // Card de Usuarios
-        gbc.gridy = 1;
+        usuariosBtn = ModernTheme.createPrimaryButton("ABRIR GESTION DE USUARIOS");
+        usuariosBtn.setPreferredSize(new Dimension(320, 42));
+        productosBtn = ModernTheme.createSecondaryButton("ABRIR GESTION DE PRODUCTOS");
+        productosBtn.setPreferredSize(new Dimension(320, 42));
+
         JPanel usuariosCard = createActionCard(
-            " Gestión de Usuarios",
-            "Administra usuarios, activa/desactiva cuentas y visualiza información"
+                "Gestion de Usuarios",
+                "Administra usuarios, activa/desactiva cuentas y visualiza informacion.",
+                usuariosBtn
         );
-        centerPanel.add(usuariosCard, gbc);
-
-        gbc.gridy = 1;
-        usuariosBtn = ModernTheme.createPrimaryButton("ABRIR GESTIÓN DE USUARIOS");
-        usuariosBtn.setPreferredSize(new Dimension(400, 45));
-        JPanel btnPanel1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        btnPanel1.setBackground(ModernTheme.BG_PRIMARY);
-        btnPanel1.add(usuariosBtn);
-        centerPanel.add(btnPanel1, gbc);
-
-        // Card de Productos
-        gbc.gridy = 2;
-        gbc.insets = new Insets(30, 0, 15, 0);
         JPanel productosCard = createActionCard(
-            " Gestión de Productos",
-            "Administra el catálogo de productos (próximamente)"
+                "Gestion de Productos",
+                "Administra el catalogo y las operaciones de productos.",
+                productosBtn
         );
-        centerPanel.add(productosCard, gbc);
 
-        gbc.gridy = 3;
-        gbc.insets = new Insets(15, 0, 15, 0);
-        productosBtn = ModernTheme.createSecondaryButton("ABRIR GESTIÓN DE PRODUCTOS");
-        productosBtn.setPreferredSize(new Dimension(400, 45));
-        productosBtn.setEnabled(true);
-        JPanel btnPanel2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        btnPanel2.setBackground(ModernTheme.BG_PRIMARY);
-        btnPanel2.add(productosBtn);
-        centerPanel.add(btnPanel2, gbc);
+        centerPanel.add(usuariosCard);
+        centerPanel.add(productosCard);
 
-        // Footer con botón salir
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 15));
         footer.setBackground(ModernTheme.BG_SECONDARY);
         footer.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(189, 195, 199)));
-        
-        salirBtn = ModernTheme.createSecondaryButton("CERRAR SESIÓN");
+
+        salirBtn = ModernTheme.createSecondaryButton("CERRAR SESION");
         footer.add(salirBtn);
 
         root.add(header, BorderLayout.NORTH);
@@ -124,27 +121,37 @@ public class MenuAdminFrame extends JFrame {
         return root;
     }
 
-    private JPanel createActionCard(String title, String description) {
-        JPanel card = new JPanel();
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+    private JPanel createActionCard(String title, String description, JButton actionBtn) {
+        // Paso 3: tarjeta por modulo con titulo/descripcion separados del boton.
+        JPanel card = new JPanel(new BorderLayout(0, 12));
         card.setBackground(Color.WHITE);
         card.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(189, 195, 199), 1),
-            BorderFactory.createEmptyBorder(20, 20, 20, 20)
+                BorderFactory.createLineBorder(new Color(189, 195, 199), 1),
+                BorderFactory.createEmptyBorder(16, 16, 16, 16)
         ));
-        card.setMaximumSize(new Dimension(500, 100));
+
+        JPanel textPanel = new JPanel();
+        textPanel.setBackground(Color.WHITE);
+        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
 
         JLabel titleLabel = ModernTheme.createSubtitleLabel(title);
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
-        JLabel descLabel = new JLabel(description);
+
+        JLabel descLabel = new JLabel("<html><body style='width:620px'>" + description + "</body></html>");
         descLabel.setFont(ModernTheme.FONT_BODY);
         descLabel.setForeground(ModernTheme.TEXT_SECONDARY);
         descLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        card.add(titleLabel);
-        card.add(Box.createVerticalStrut(5));
-        card.add(descLabel);
+        textPanel.add(titleLabel);
+        textPanel.add(Box.createVerticalStrut(6));
+        textPanel.add(descLabel);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        buttonPanel.setBackground(Color.WHITE);
+        buttonPanel.add(actionBtn);
+
+        card.add(textPanel, BorderLayout.NORTH);
+        card.add(buttonPanel, BorderLayout.SOUTH);
 
         return card;
     }
@@ -171,15 +178,14 @@ public class MenuAdminFrame extends JFrame {
 
     private void doLogout() {
         int confirm = JOptionPane.showConfirmDialog(this,
-                "¿Estás seguro de que deseas cerrar sesión?",
-                "Confirmar cierre de sesión",
+                "Estas seguro de que deseas cerrar sesion?",
+                "Confirmar cierre de sesion",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
-        
+
         if (confirm == JOptionPane.YES_OPTION) {
             dispose();
-            new LoginFrame(authTx, usuarioTx, adminTx).setVisible(true);
+            new LoginFrame(authTx, usuarioTx, adminTx, productoTx, carritoTx, pedidoTx).setVisible(true);
         }
     }
 }
-

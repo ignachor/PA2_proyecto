@@ -1,13 +1,17 @@
 package com.igna.tienda.infra.services;
 
 import com.igna.tienda.core.domain.Producto;
+import com.igna.tienda.core.domain.Pedido;
 import com.igna.tienda.core.domain.Usuario;
 import com.igna.tienda.core.domain.enums.CategoriaProducto;
+import com.igna.tienda.core.domain.enums.EstadoPedido;
+import com.igna.tienda.infra.persistence.jpa.JpaPedidoRepository;
 import com.igna.tienda.infra.persistence.jpa.JpaProductoRepository;
 import com.igna.tienda.infra.persistence.jpa.JpaUsuarioRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import com.igna.tienda.core.services.AdminService;
+import com.igna.tienda.core.services.PedidoService;
 import com.igna.tienda.core.services.ProductoService;
 import java.util.List;
 public class AdminServiceTx {
@@ -161,7 +165,8 @@ public class AdminServiceTx {
         try {
             var repo = new JpaProductoRepository(em);
             var productoCore = new ProductoService(repo);
-            return productoCore.BuscarProducto(nombreBuscar);
+            // Flujo de admin: busca aunque el producto este dado de baja.
+            return productoCore.BuscarProductoAdmin(nombreBuscar);
         } finally {
             em.close();
         }
@@ -177,6 +182,37 @@ public class AdminServiceTx {
             var repo = new JpaProductoRepository(em);
             var productoCore = new ProductoService(repo);
             return productoCore.BuscarProductoCategoria(categoriaProducto);
+        } finally {
+            em.close();
+        }
+    }
+
+    // LISTAR TODOS LOS PEDIDOS (ADMIN)
+    public List<Pedido> listarTodosPedidos() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            var repo = new JpaPedidoRepository(em);
+            var pedidoCore = new PedidoService(repo);
+            return pedidoCore.ListarTodosLosPedidos();
+        } finally {
+            em.close();
+        }
+    }
+
+    // CAMBIAR ESTADO DE PEDIDO (ADMIN)
+    public Pedido cambiarEstadoPedido(Long pedidoId, EstadoPedido nuevoEstado) {
+        EntityManager em = emf.createEntityManager();
+        var tx = em.getTransaction();
+        try {
+            tx.begin();
+            var repo = new JpaPedidoRepository(em);
+            var pedidoCore = new PedidoService(repo);
+            Pedido pedidoActualizado = pedidoCore.CambiarEstadoPedido(pedidoId, nuevoEstado);
+            tx.commit();
+            return pedidoActualizado;
+        } catch (RuntimeException e) {
+            if (tx.isActive()) tx.rollback();
+            throw e;
         } finally {
             em.close();
         }

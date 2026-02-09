@@ -49,6 +49,19 @@ public class Producto {
         this.stock = stock;
     }
 
+    // MODIFICACION: constructor con id para poder enviar productos a modificar desde la UI.
+    public Producto(Long id, String nombre, String descripcion, CategoriaProducto categoria, double precio, int cantidad, int cantidadMinimo, int fechaVencimiento, boolean stock) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.categoria = categoria;
+        this.precio = precio;
+        this.cantidad = cantidad;
+        this.cantidadMinimo = cantidadMinimo;
+        this.fechaVencimiento = fechaVencimiento;
+        this.stock = stock;
+    }
+
     public Long getId() {
         return id;
     }
@@ -93,7 +106,29 @@ public class Producto {
         this.stock = true;
     }
 
-    public void cambiarDatosProducto(String nombre, String descripcion, CategoriaProducto categoria, double precio, int cantidad, int cantidadMinimo, int fechaVencimiento) {
+    // IMPLEMENTACION: descuenta unidades para CU finalizar compra.
+    public void descontarCantidad(int cantidadDescontar) {
+        if (cantidadDescontar <= 0) {
+            throw new IllegalArgumentException("Cantidad a descontar invalida");
+        }
+        if (cantidadDescontar > this.cantidad) {
+            throw new IllegalArgumentException("Stock insuficiente");
+        }
+        this.cantidad -= cantidadDescontar;
+        this.stock = this.cantidad > 0;
+    }
+
+    // IMPLEMENTACION: repone unidades y reactiva stock si corresponde.
+    public void aumentarCantidad(int cantidadAumentar) {
+        if (cantidadAumentar <= 0) {
+            throw new IllegalArgumentException("Cantidad a aumentar invalida");
+        }
+        this.cantidad += cantidadAumentar;
+        this.stock = this.cantidad > 0;
+    }
+
+    // MODIFICACION: se agrega stock para permitir reactivacion/desactivacion en el CU Modificar Producto.
+    public void cambiarDatosProducto(String nombre, String descripcion, CategoriaProducto categoria, double precio, int cantidad, int cantidadMinimo, int fechaVencimiento, boolean stock) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.categoria = categoria;
@@ -101,6 +136,7 @@ public class Producto {
         this.cantidad = cantidad;
         this.cantidadMinimo = cantidadMinimo;
         this.fechaVencimiento = fechaVencimiento;
+        this.stock = stock;
     }
 
 }

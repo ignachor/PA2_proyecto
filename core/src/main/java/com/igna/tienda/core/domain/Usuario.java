@@ -3,7 +3,8 @@ import com.igna.tienda.core.domain.enums.Rol;
 import com.igna.tienda.core.domain.value.Direccion;
 import java.util.UUID;
 import jakarta.persistence.*;
-
+import java.util.ArrayList;
+import java.util.List;
 @Entity
 @Table(name = "usuario", uniqueConstraints= @UniqueConstraint(columnNames = "email"))
 public class Usuario {
@@ -27,6 +28,13 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Rol rol;
+
+    // MODIFICACION: mappedBy debe coincidir con el atributo de Carrito que referencia a Usuario.
+    @OneToOne(mappedBy = "usuarioCliente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Carrito carrito;
+    // MODIFICACION: mappedBy debe coincidir con el atributo de Pedido que referencia a Usuario.
+    @OneToMany(mappedBy = "usuarioCliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pedido> listaPedidos = new ArrayList<>();
 
     public Usuario() {
 
@@ -74,6 +82,14 @@ public class Usuario {
         return password;
     }
 
+    public Carrito getCarrito() {
+        return carrito;
+    }
+
+    public List<Pedido> getListaPedidos() {
+        return listaPedidos;
+    }
+
     public Rol getRol() {
         return rol;
     }
@@ -110,4 +126,8 @@ public class Usuario {
     public void cambiarDireccion(Direccion direccion) {
         this.direccion = direccion;
         }
+
+    public void crearCarrito(Carrito carritoNuevo){
+        this.carrito = carritoNuevo;
+    }
 }

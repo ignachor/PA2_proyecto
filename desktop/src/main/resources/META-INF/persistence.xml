@@ -9,6 +9,10 @@
 
     <class>com.igna.tienda.core.domain.Usuario</class>
     <class>com.igna.tienda.core.domain.Producto</class>
+    <class>com.igna.tienda.core.domain.Carrito</class>
+    <class>com.igna.tienda.core.domain.DetalleCarrito</class>
+    <class>com.igna.tienda.core.domain.Pedido</class>
+    <class>com.igna.tienda.core.domain.DetallePedido</class>
 
     <properties>
       <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>

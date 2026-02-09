@@ -3,6 +3,7 @@ package com.igna.tienda.core.services;
 import com.igna.tienda.core.domain.Producto;
 import com.igna.tienda.core.domain.enums.CategoriaProducto;
 import com.igna.tienda.core.repositories.ProductoRepository;
+import java.util.ArrayList;
 import java.util.List;
 public class ProductoService {
     private ProductoRepository pRepo;
@@ -96,9 +97,10 @@ public class ProductoService {
         if ((modificarProducto.getNombre() == null) || (modificarProducto.getNombre().isEmpty()) || (modificarProducto.getNombre().isBlank())){
             throw new IllegalArgumentException("Nombre no proporcionado, es un dato obligatorio");
         } else {
+            // MODIFICACION: se propaga stock para habilitar reactivacion/desactivacion en la edicion.
             productoExistente.cambiarDatosProducto(modificarProducto.getNombre(), modificarProducto.getDescripcion(), modificarProducto.getCategoria(),
                                                 modificarProducto.getPrecio(), modificarProducto.getCantidad(), modificarProducto.getCantidadMinimo(), 
-                                                modificarProducto.getFechaVencimiento());
+                                                modificarProducto.getFechaVencimiento(), modificarProducto.getStock());
             pRepo.guardar(productoExistente);
         }
     }
@@ -109,18 +111,46 @@ public class ProductoService {
         return pRepo.listarProductos();
         }   
 
+    // CU usuario: listar solo productos activos/en stock.
+    public List<Producto> ListarProductosActivos() {
+        List<Producto> activos = new ArrayList<>();
+        for (Producto producto : pRepo.listarProductos()) {
+            if (producto != null && producto.getStock()) {
+                activos.add(producto);
+            }
+        }
+        return activos;
+    }
+
     //CU- : Buscar Productos
     public Producto BuscarProducto(String nombre){
         Producto buscarProducto = pRepo.buscarPorNombre(nombre);
-        if(buscarProducto != null)
+        // Regla para usuario: solo puede encontrar productos activos/en stock.
+        if(buscarProducto != null && buscarProducto.getStock())
         {
             return buscarProducto;
         }
         return null;
     }
 
+    // Busqueda administrativa: permite ver tambien productos dados de baja.
+    public Producto BuscarProductoAdmin(String nombre){
+        return pRepo.buscarPorNombre(nombre);
+    }
+
     //CU- : Buscar Productos por categoria 
     public List<Producto> BuscarProductoCategoria(CategoriaProducto categoriaProducto){
         return pRepo.buscarProductosPorCategoria(categoriaProducto);
+    }
+
+    // CU usuario: buscar por categoria solo productos activos/en stock.
+    public List<Producto> BuscarProductoCategoriaUsuario(CategoriaProducto categoriaProducto){
+        List<Producto> activos = new ArrayList<>();
+        for (Producto producto : pRepo.buscarProductosPorCategoria(categoriaProducto)) {
+            if (producto != null && producto.getStock()) {
+                activos.add(producto);
+            }
+        }
+        return activos;
     }
 }

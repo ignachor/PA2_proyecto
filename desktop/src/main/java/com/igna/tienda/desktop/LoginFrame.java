@@ -1,10 +1,14 @@
 package com.igna.tienda.desktop;
 
+import com.igna.tienda.core.domain.Usuario;
+import com.igna.tienda.core.domain.enums.Rol;
 import com.igna.tienda.infra.services.AdminServiceTx;
 import com.igna.tienda.infra.services.AuthServiceTx;
-import com.igna.tienda.core.domain.Usuario;
+import com.igna.tienda.infra.services.CarritoServiceTx;
+import com.igna.tienda.infra.services.PedidoServiceTx;
+import com.igna.tienda.infra.services.ProductoServiceTx;
 import com.igna.tienda.infra.services.UsuarioServiceTx;
-import com.igna.tienda.core.domain.enums.Rol;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,7 +17,10 @@ public class LoginFrame extends JFrame {
     private final AuthServiceTx authTx;
     private final UsuarioServiceTx usuarioTx;
     private final AdminServiceTx adminTx;
-    
+    private final ProductoServiceTx productoTx;
+    private final CarritoServiceTx carritoTx;
+    private final PedidoServiceTx pedidoTx;
+
     private JTextField emailField;
     private JPasswordField passwordField;
     private JButton loginBtn;
@@ -21,11 +28,25 @@ public class LoginFrame extends JFrame {
     private JLabel statusLabel;
 
     public LoginFrame(AuthServiceTx authTx, UsuarioServiceTx usuarioTx, AdminServiceTx adminTx) {
-        super("Tienda - Iniciar Sesión");
+        this(authTx, usuarioTx, adminTx, null, null, null);
+    }
+
+    public LoginFrame(
+            AuthServiceTx authTx,
+            UsuarioServiceTx usuarioTx,
+            AdminServiceTx adminTx,
+            ProductoServiceTx productoTx,
+            CarritoServiceTx carritoTx,
+            PedidoServiceTx pedidoTx
+    ) {
+        super("Tienda - Iniciar Sesion");
         this.authTx = authTx;
         this.usuarioTx = usuarioTx;
         this.adminTx = adminTx;
-        
+        this.productoTx = productoTx;
+        this.carritoTx = carritoTx;
+        this.pedidoTx = pedidoTx;
+
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(500, 600));
         setLocationRelativeTo(null);
@@ -39,48 +60,43 @@ public class LoginFrame extends JFrame {
         JPanel root = new JPanel(new BorderLayout());
         root.setBackground(ModernTheme.BG_PRIMARY);
 
-        // Panel superior con degradado (simulado con color sólido)
         JPanel header = new JPanel();
         header.setBackground(ModernTheme.PRIMARY);
         header.setPreferredSize(new Dimension(500, 120));
         header.setLayout(new GridBagLayout());
-        
+
         JLabel titleLabel = new JLabel("BIENVENIDO");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 32));
         titleLabel.setForeground(Color.WHITE);
         header.add(titleLabel);
 
-        // Panel central con formulario
         JPanel centerPanel = new JPanel();
         centerPanel.setBackground(ModernTheme.BG_PRIMARY);
         centerPanel.setLayout(new GridBagLayout());
         centerPanel.setBorder(BorderFactory.createEmptyBorder(40, 50, 40, 50));
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 0, 10, 0);
         gbc.gridx = 0;
         gbc.weightx = 1.0;
 
-        // Subtítulo
         gbc.gridy = 0;
-        JLabel subtitle = ModernTheme.createSubtitleLabel("Inicia sesión en tu cuenta");
+        JLabel subtitle = ModernTheme.createSubtitleLabel("Inicia sesion en tu cuenta");
         subtitle.setHorizontalAlignment(SwingConstants.CENTER);
         centerPanel.add(subtitle, gbc);
 
-        // Email
         gbc.gridy = 1;
-        JLabel emailLabel = ModernTheme.createLabel("Correo electrónico");
+        JLabel emailLabel = ModernTheme.createLabel("Correo electronico");
         centerPanel.add(emailLabel, gbc);
 
         gbc.gridy = 2;
         emailField = ModernTheme.createTextField(20);
         centerPanel.add(emailField, gbc);
 
-        // Password
         gbc.gridy = 3;
         gbc.insets = new Insets(20, 0, 10, 0);
-        JLabel passwordLabel = ModernTheme.createLabel("Contraseña");
+        JLabel passwordLabel = ModernTheme.createLabel("Contrasena");
         centerPanel.add(passwordLabel, gbc);
 
         gbc.gridy = 4;
@@ -88,7 +104,6 @@ public class LoginFrame extends JFrame {
         passwordField = ModernTheme.createPasswordField(20);
         centerPanel.add(passwordField, gbc);
 
-        // Status label
         gbc.gridy = 5;
         statusLabel = new JLabel(" ");
         statusLabel.setFont(ModernTheme.FONT_SMALL);
@@ -96,10 +111,9 @@ public class LoginFrame extends JFrame {
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         centerPanel.add(statusLabel, gbc);
 
-        // Botones
         gbc.gridy = 6;
         gbc.insets = new Insets(20, 0, 10, 0);
-        loginBtn = ModernTheme.createPrimaryButton("INICIAR SESIÓN");
+        loginBtn = ModernTheme.createPrimaryButton("INICIAR SESION");
         loginBtn.setPreferredSize(new Dimension(300, 45));
         centerPanel.add(loginBtn, gbc);
 
@@ -133,18 +147,21 @@ public class LoginFrame extends JFrame {
         setBusy(true);
         try {
             Usuario u = authTx.iniciarSesion(email, pass);
-            
+
             if (u.getRol() == Rol.CLIENTE) {
-                MenuFrame menu = new MenuFrame(authTx, usuarioTx, adminTx, u);
+                if (productoTx == null || carritoTx == null || pedidoTx == null) {
+                    throw new IllegalStateException("Servicios de cliente no disponibles");
+                }
+                MenuFrame menu = new MenuFrame(authTx, usuarioTx, adminTx, productoTx, carritoTx, pedidoTx, u);
                 menu.setVisible(true);
                 dispose();
             } else {
-                MenuAdminFrame admin = new MenuAdminFrame(authTx, usuarioTx, adminTx, u);
+                MenuAdminFrame admin = new MenuAdminFrame(authTx, usuarioTx, adminTx, productoTx, carritoTx, pedidoTx, u);
                 admin.setVisible(true);
                 dispose();
             }
-            
-            statusLabel.setText("¡Bienvenido!");
+
+            statusLabel.setText("Ingreso correcto");
             statusLabel.setForeground(ModernTheme.SUCCESS);
         } catch (RuntimeException ex) {
             showError(ex.getMessage());
@@ -161,14 +178,14 @@ public class LoginFrame extends JFrame {
         if (registeredEmail != null) {
             emailField.setText(registeredEmail);
             passwordField.setText("");
-            statusLabel.setText("Cuenta creada. Inicia sesión ahora");
+            statusLabel.setText("Cuenta creada. Inicia sesion ahora");
             statusLabel.setForeground(ModernTheme.SUCCESS);
             passwordField.requestFocusInWindow();
         }
     }
 
     private void showError(String message) {
-        statusLabel.setText("✗ " + message);
+        statusLabel.setText("Error: " + message);
         statusLabel.setForeground(ModernTheme.ERROR);
     }
 

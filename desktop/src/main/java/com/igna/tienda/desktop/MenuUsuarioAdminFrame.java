@@ -173,11 +173,9 @@ public class MenuUsuarioAdminFrame extends JFrame {
     }
 
     private void verPedidos() {
-        // Placeholder: boton solicitado aunque la ventana no existe aun
-        JOptionPane.showMessageDialog(this,
-                "Ver pedidos (pendiente).",
-                "Pedidos",
-                JOptionPane.INFORMATION_MESSAGE);
+        // IMPLEMENTACION: abre la nueva pantalla administrativa de pedidos.
+        PedidosUsuarioAdminFrame frame = new PedidosUsuarioAdminFrame(this, adminTx);
+        frame.setVisible(true);
     }
 
     private void listarUsuarios() {
