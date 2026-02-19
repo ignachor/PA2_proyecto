@@ -21,10 +21,10 @@ import java.util.Locale;
 @RequestMapping({"/tiendaCliente", "/catalogo"})
 public class ProductoController {
 
-    private final ProductoServiceTx productoService;
+    private final ProductoServiceTx productoServiceTx;
 
     public ProductoController(EntityManagerFactory emf) {
-        this.productoService = new ProductoServiceTx(emf);
+        this.productoServiceTx = new ProductoServiceTx(emf);
     }
 
     /**
@@ -36,7 +36,7 @@ public class ProductoController {
                            Authentication auth,
                            Model model) {
         try {
-            List<Producto> productos = productoService.listarProductosActivos();
+            List<Producto> productos = productoServiceTx.listarProductosActivos();
             String busquedaNormalizada = busqueda == null ? "" : busqueda.trim();
 
             if (categoria != null) {

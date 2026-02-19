@@ -33,12 +33,15 @@ public class AuthController {
     public String loginPage(@RequestParam(value = "error", required = false) String error,
                            @RequestParam(value = "logout", required = false) String logout,
                            Model model) {
+        // Si viene el flag de error, mostrar mensaje de credenciales invalidas
         if (error != null) {
             model.addAttribute("error", "Email o contraseña incorrectos");
         }
+        // Si viene el flag de logout, mostrar confirmacion de cierre de sesion
         if (logout != null) {
             model.addAttribute("mensaje", "Sesión cerrada exitosamente");
         }
+        // Renderiza la vista de login
         return "login";
     }
 
@@ -47,7 +50,9 @@ public class AuthController {
      */
     @GetMapping("/registro")
     public String registroPage(Model model) {
+        // Inicializa el formulario vacio para el binding en la vista
         model.addAttribute("form", new RegistroForm());
+        // Renderiza la vista de registro
         return "registro";
     }
 
@@ -88,10 +93,12 @@ public class AuthController {
             return "redirect:/login?registroExitoso=true";
 
         } catch (IllegalArgumentException e) {
+            // Errores de validacion de negocio
             model.addAttribute("error", e.getMessage());
             model.addAttribute("form", form);
             return "registro";
         } catch (Exception e) {
+            // Errores inesperados
             model.addAttribute("error", "Error al registrar usuario: " + e.getMessage());
             model.addAttribute("form", form);
             return "registro";
@@ -103,6 +110,7 @@ public class AuthController {
      */
     @GetMapping("/")
     public String index() {
+        // Renderiza la pagina principal
         return "index";
     }
 }
